@@ -344,3 +344,223 @@ mysql> select empno as 사번, name as 이름, job as 직업 from employee order
 +--------+--------+-----------+
 14 rows in set (0.00 sec)
 ```
+
+<br>
+
+### 데이터 정의어
+
+테이블 생성
+
+create table 테이블명 (
+    필드명1 타입 [NULL | NOT NULL][DEFAULT ][AUTO_INCREMENT],
+    필드명2 타입 [NULL | NOT NULL][DEFAULT ][AUTO_INCREMENT],
+    필드명3 타입 [NULL | NOT NULL][DEFAULT ][AUTO_INCREMENT],
+    .....
+    PRIMARY KEY(필드명)
+);
+
+```bash
+mysql> create table EMPLOYEE2(                                                           
+    -> empno INTEGER NOT NULL PRIMARY KEY,                                            
+    -> name VARCHAR(10),                                                         
+    -> job VARCHAR(9),                                                             
+    -> boss INTEGER,                                                                
+    -> hiredate VARCHAR(12),                                                          
+    -> salary DECIMAL(7, 2),                                                           
+    -> comm DECIMAL(7, 2),                                                       
+    -> deptno INTEGER);                                                        
+Query OK, 0 rows affected (0.01 sec)
+``` 
+
+```bash
+mysql> desc EMPLOYEE2;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| empno    | int          | NO   | PRI | NULL    |       |
+| name     | varchar(10)  | YES  |     | NULL    |       |
+| job      | varchar(9)   | YES  |     | NULL    |       |
+| boss     | int          | YES  |     | NULL    |       |
+| hiredate | varchar(12)  | YES  |     | NULL    |       |
+| salary   | decimal(7,2) | YES  |     | NULL    |       |
+| comm     | decimal(7,2) | YES  |     | NULL    |       |
+| deptno   | int          | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+8 rows in set (0.01 sec)
+
+mysql> desc employee;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| empno    | int          | NO   | PRI | NULL    |       |
+| name     | varchar(10)  | YES  |     | NULL    |       |
+| job      | varchar(9)   | YES  |     | NULL    |       |
+| boss     | int          | YES  | MUL | NULL    |       |
+| hiredate | varchar(12)  | YES  |     | NULL    |       |
+| salary   | decimal(7,2) | YES  |     | NULL    |       |
+| comm     | decimal(7,2) | YES  |     | NULL    |       |
+| deptno   | int          | YES  | MUL | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+```
+```bash
+mysql> create table book(
+    -> isbn varchar(10) primary key,
+    -> title varchar(20) not null,
+    -> price integer not null);
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> desc book;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| isbn  | varchar(10) | NO   | PRI | NULL    |       |
+| title | varchar(20) | NO   |     | NULL    |       |
+| price | int         | NO   |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+```
+
+### 테이블 수정(칼럼 추가 / 삭제)
+
+`alter` 키워드를 이용한다.
+
+**추가**
+
+alter table 테이블명 add 필드명 타입 [NULL | NOT NULL][DEFAULT ][AUTO_INCREMENT];
+
+**삭제**
+
+alter table 테이블명 drop 필드명;
+
+```bash
+mysql> desc book;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| isbn  | varchar(10) | NO   | PRI | NULL    |       |
+| title | varchar(20) | NO   |     | NULL    |       |
+| price | int         | NO   |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql>
+mysql> alter table book
+    -> add author varchar(20);
+Query OK, 0 rows affected (0.00 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc book;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| isbn   | varchar(10) | NO   | PRI | NULL    |       |
+| title  | varchar(20) | NO   |     | NULL    |       |
+| price  | int         | NO   |     | NULL    |       |
+| author | varchar(20) | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+```
+
+```bash
+mysql> alter table book
+    -> drop price;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc book;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| isbn   | varchar(10) | NO   | PRI | NULL    |       |
+| title  | varchar(20) | NO   |     | NULL    |       |
+| author | varchar(20) | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+```
+
+### 컬럼 수정
+
+```
+alter table 테이블명
+    change 필드명 새필드명 타입 [NULL | NOT NULL] [DEFAULT ][AUTO_INCREMENT];
+```
+
+```bash
+mysql> desc employee2
+    -> ;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| empno    | int          | NO   | PRI | NULL    |       |
+| name     | varchar(10)  | YES  |     | NULL    |       |
+| job      | varchar(9)   | YES  |     | NULL    |       |
+| boss     | int          | YES  |     | NULL    |       |
+| hiredate | varchar(12)  | YES  |     | NULL    |       |
+| salary   | decimal(7,2) | YES  |     | NULL    |       |
+| comm     | decimal(7,2) | YES  |     | NULL    |       |
+| deptno   | int          | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+mysql> alter table employee2
+    -> change deptno dept_no int(11);
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 1
+
+mysql> desc employee2;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| empno    | int          | NO   | PRI | NULL    |       |
+| name     | varchar(10)  | YES  |     | NULL    |       |
+| job      | varchar(9)   | YES  |     | NULL    |       |
+| boss     | int          | YES  |     | NULL    |       |
+| hiredate | varchar(12)  | YES  |     | NULL    |       |
+| salary   | decimal(7,2) | YES  |     | NULL    |       |
+| comm     | decimal(7,2) | YES  |     | NULL    |       |
+| dept_no  | int          | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+8 rows in set (0.01 sec)
+```
+
+### 테이블 이름 변경
+```
+alter table 테이블명 rename 테이블명
+```
+
+```bash
+mysql> desc employee2;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| empno    | int          | NO   | PRI | NULL    |       |
+| name     | varchar(10)  | YES  |     | NULL    |       |
+| job      | varchar(9)   | YES  |     | NULL    |       |
+| boss     | int          | YES  |     | NULL    |       |
+| hiredate | varchar(12)  | YES  |     | NULL    |       |
+| salary   | decimal(7,2) | YES  |     | NULL    |       |
+| comm     | decimal(7,2) | YES  |     | NULL    |       |
+| dept_no  | int          | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+8 rows in set (0.01 sec)
+
+mysql> alter table employee2 rename employee3;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> show tables;
++-----------------------+
+| Tables_in_connectdb   |
++-----------------------+
+| BONUS                 |
+| book                  |
+| DEPARTMENT            |
+| EMPLOYEE              |
+| employee3             |
+| PROJECT               |
+| PROJECT_PARTICIPATION |
+| ROLE                  |
+| SALARYGRADE           |
++-----------------------+
+9 rows in set (0.00 sec)
+```
