@@ -98,9 +98,249 @@ DB가 잘 만들어졌다면 사용자를 생성하고 권한을 부여해야한
 
 `grant all privileges on connectdb.* to connectuser@'%' identified by 'connect123!@#';`
 
+mysql 8.x 버전 부터는 계정의 생성과 동시에 권한을 부여할 수 없다.
+따라서, 계정을 생성한 이후에 권한을 부여한다.
+```sql
+mysql> create user 'connectuser'@'localhost' identified by 'connect123!@#';
+
+mysql> grant all privileges on connectdb.* to 'connectuser'@'localhost';
+
+mysql> flush privileges;
+```
 
 **데이터베이스 접속방법**
 
-`mysql -h호스트명 -uDB계정명 -p DB이름`
+`mysql -h[호스트명] -u[DB계정명] -p [DB이름]`
 
- 
+실제 사용자가 생성한 계정이 잘 되었는지 확인하기 위해 직접 접속해본다.
+
+`mysql -uconnectuser -p connectdb`
+
+`show grants for [계정명]@[호스트]` : 권한 조회
+
+<br>
+
+### 테이블의 구성요소
+-   테이블 : RDBMS의 기본적 저장구조 한 개 이상의 column과 1개 이상의 row로 구성
+
+-   열(column) : 테이블 상에서의 단일 종류의 데이터를 나타냄, 특정 데이터 타입 및 크기를 가지고 있다.
+
+-   행(Row) : Column들의 값 조합, 레코드라고 불림, 기본키(Public Key)에 의해 구분. 기본키는 중복을 허용하지 않으며 없어서는 안된다.
+
+-   필드(Field) : Row와 Column의 교차점으로 Field는 데이터를 포함할 수 있고 없을 때는 NULL값을 갖는다.
+
+![image](https://user-images.githubusercontent.com/33051018/77221947-06b2cd80-6b92-11ea-92cf-c846e644ca31.png)
+
+`show tables`는 db의 테이블 목록을 보는 명령이다.
+
+<br>
+
+**테이블 구조를 확인하기 위한 DESCRIBE 명령**
+table 구조를 확인하기 위해, `describe` 명령을 사용할 수 있다.
+짧게 desc로 명령하여도 된다.
+`EMPLOYEE` 테이블 구조를 살펴본다.
+
+`desc EMPLOYEE;`
+
+하나의 DBMS에는 여러 개의 데이터베이스를 생성하고, 각각의 데이터베이스를 사용할 수 있는 사용자를 추가할 수 있다.
+
+### 데이터 조작어
+select, insert, update ,delete
+
+**select 칼럼명 from 테이블명;**
+
+칼럼은 여러개를 동시에 볼 수 있는데 여러개를 지정할때는 `,`를 통해 나열한다.
+
+어떠한 테이블을 조회하거나 조작을 하게 될 때 테이블 구조를 확인하는 일은 매우 중요하다.
+
+테이블에 존재하는 칼럼들을 파악하기 위해서 는 `desc` 명령을 통해 조회한다.
+
+![image](https://user-images.githubusercontent.com/33051018/77222233-c1dc6600-6b94-11ea-9fd1-d516e1053383.png)
+
+`alias`를 통해 `deptno`를 사번으로 출력할 수 있다.
+
+**concat 함수**
+출력할 문자열을 합해서 출력해준다.
+일반적으로 아는 concat과 같은 기능.
+
+함수 또한 `alias`와 같이 응용하여 사용 가능.
+
+```bash
+mysql> select concat(empno, '-', deptno) as '사번-부서번호' from employee;
++---------------------+
+| 사번-부서번호       |
++---------------------+
+| 7782-10             |
+| 7839-10             |
+| 7934-10             |
+| 7369-20             |
+| 7566-20             |
+| 7788-20             |
+| 7876-20             |
+| 7902-20             |
+| 7499-30             |
+| 7521-30             |
+| 7654-30             |
+| 7698-30             |
+| 7844-30             |
+| 7900-30             |
++---------------------+
+14 rows in set (0.00 sec)
+```
+
+**DISTINCT** 키워드는 중복행을 제거한다.
+
+```bash
+mysql>  select deptno from employee;
++--------+
+| deptno |
++--------+
+|     10 |
+|     10 |
+|     10 |
+|     20 |
+|     20 |
+|     20 |
+|     20 |
+|     20 |
+|     30 |
+|     30 |
+|     30 |
+|     30 |
+|     30 |
+|     30 |
++--------+
+14 rows in set (0.00 sec)
+
+mysql> select distinct deptno from employee;
++--------+
+| deptno |
++--------+
+|     10 |
+|     20 |
+|     30 |
++--------+
+3 rows in set (0.00 sec)
+```
+
+#### 정렬 (order by)
+
+```bash
+mysql> select empno, name from employee;
++-------+--------+
+| empno | name   |
++-------+--------+
+|  7369 | SMITH  |
+|  7499 | ALLEN  |
+|  7521 | WARD   |
+|  7566 | JONES  |
+|  7654 | MARTIN |
+|  7698 | BLAKE  |
+|  7782 | CLARK  |
+|  7788 | SCOTT  |
+|  7839 | KING   |
+|  7844 | TURNER |
+|  7876 | ADAMS  |
+|  7900 | JAMES  |
+|  7902 | FORD   |
+|  7934 | MILLER |
++-------+--------+
+14 rows in set (0.00 sec)
+
+mysql> select empno, name from employee order by name;
++-------+--------+
+| empno | name   |
++-------+--------+
+|  7876 | ADAMS  |
+|  7499 | ALLEN  |
+|  7698 | BLAKE  |
+|  7782 | CLARK  |
+|  7902 | FORD   |
+|  7900 | JAMES  |
+|  7566 | JONES  |
+|  7839 | KING   |
+|  7654 | MARTIN |
+|  7934 | MILLER |
+|  7788 | SCOTT  |
+|  7369 | SMITH  |
+|  7844 | TURNER |
+|  7521 | WARD   |
++-------+--------+
+14 rows in set (0.00 sec)
+```
+
+**select 칼럼명 from 테이블명 order by 정렬기준(칼럼명)**
+
+기본적으로는 `ascending` 정렬로 진행한다.
+
+만일 내림차순 정렬로 살펴보고 싶다면 `descending` -> `desc` 키워드를 넣어주면 된다.
+
+```bash
+mysql> select empno, name from employee order by name desc;
++-------+--------+
+| empno | name   |
++-------+--------+
+|  7521 | WARD   |
+|  7844 | TURNER |
+|  7369 | SMITH  |
+|  7788 | SCOTT  |
+|  7934 | MILLER |
+|  7654 | MARTIN |
+|  7839 | KING   |
+|  7566 | JONES  |
+|  7900 | JAMES  |
+|  7902 | FORD   |
+|  7782 | CLARK  |
+|  7698 | BLAKE  |
+|  7499 | ALLEN  |
+|  7876 | ADAMS  |
++-------+--------+
+14 rows in set (0.00 sec)
+```
+
+**예제**
+
+`employee` 테이블에서 직원의 empno, name, job을 출력한다. 단 name을 기준으로 오름차순 정렬한다.
+```bash
+mysql> select empno, name, job from employee order by name;
++-------+--------+-----------+
+| empno | name   | job       |
++-------+--------+-----------+
+|  7876 | ADAMS  | CLERK     |
+|  7499 | ALLEN  | SALESMAN  |
+|  7698 | BLAKE  | MANAGER   |
+|  7782 | CLARK  | MANAGER   |
+|  7902 | FORD   | ANALYST   |
+|  7900 | JAMES  | CLERK     |
+|  7566 | JONES  | MANAGER   |
+|  7839 | KING   | PRESIDENT |
+|  7654 | MARTIN | SALESMAN  |
+|  7934 | MILLER | CLERK     |
+|  7788 | SCOTT  | ANALYST   |
+|  7369 | SMITH  | CLERK     |
+|  7844 | TURNER | SALESMAN  |
+|  7521 | WARD   | SALESMAN  |
++-------+--------+-----------+
+14 rows in set (0.01 sec)
+
+mysql> select empno as 사번, name as 이름, job as 직업 from employee order by 이름;
++--------+--------+-----------+
+| 사번   | 이름   | 직업      |
++--------+--------+-----------+
+|   7876 | ADAMS  | CLERK     |
+|   7499 | ALLEN  | SALESMAN  |
+|   7698 | BLAKE  | MANAGER   |
+|   7782 | CLARK  | MANAGER   |
+|   7902 | FORD   | ANALYST   |
+|   7900 | JAMES  | CLERK     |
+|   7566 | JONES  | MANAGER   |
+|   7839 | KING   | PRESIDENT |
+|   7654 | MARTIN | SALESMAN  |
+|   7934 | MILLER | CLERK     |
+|   7788 | SCOTT  | ANALYST   |
+|   7369 | SMITH  | CLERK     |
+|   7844 | TURNER | SALESMAN  |
+|   7521 | WARD   | SALESMAN  |
++--------+--------+-----------+
+14 rows in set (0.00 sec)
+```
