@@ -119,3 +119,151 @@ ResultSet으로 결과받기
 `stmt.close();`
 `con.close();`
 
+<br>
+
+### JDBC 단계별 사용방법
+1. Driver Loading
+2. connection 연결
+3. 명령할 수 있는 statement 객체 생성
+4. 결과값을 얻어낼 수 있는 ResultSet 객체 생성
+5. 객체 close
+
+ try~catch 구문을 이용해서 예외를 처리해준다.
+
+ 본격적으로 연결하고 명령을 수행하고 한 다음에는 반드시 객체를 닫아줘야한다.
+
+따라서, 코드를 작성할 때 객체를 닫아주는 부분을 먼저 작성해준다. -> 어떤 일이 있어도 반드시 수행되는 `finally` 블록 이용해서 진행.
+
+그러나 `.close()` 메소드도 예외를 처리해줘야 하는 메소드임을 인식하고 작성한다.
+
+항상 코드를 작성할때, 어떻게 하면 조금이라도 더 안전하게 만들수 있을까? 이런것들을 생각하면서 코드를 작성하는것을 생활화한다.
+
+1. Driver Loading -> `Class.forName("드라이버 패키지명")`
+2. connection 객체 생성 -> `conn = DriverManager.getConnection(url, user, pw)`
+3. conn 객체로 부터 statement 객체 생성 -> `PreparedStatement ps = conn.prepareStatement(sql);`
+4. ResultSet 객체 생성 -> ResultSet rs = ps.executeQuery();
+5. 모든 객체 `close()`
+
+```java
+
+//RoleDao.java
+
+package kr.or.connect.jdbcexam.dao;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import com.mysql.jdbc.PreparedStatement;
+
+import kr.or.connect.jdbcexam.dto.Role;
+
+public class RoleDao {
+	
+	private static String url = "jdbc:mysql://localhost:3306/connectdb?useSSL=false";
+	private static String dbuser = "connectuser";
+	private static String dbpasswd = "connect123!@#";
+	
+	//데이터를 가져왔을때 Role 이라는 개체를 가져올것이니 반환형은 Role ,인자는 primary-key roleid 
+	public Role getRole(Integer roleId) {
+		Role role = null;
+		Connection conn = null;				// 커넥션 연결용 객
+		java.sql.PreparedStatement ps = null;		// 명령을 수행하기 위한 statement 객
+		ResultSet rs = null;				// 결과값을 담아낼 객체 ResultSet 
+		
+		// 예외처리 
+		try {
+			// Driver load
+			Class.forName("com.mysql.jdbc.Driver"); 		// 1. 드라이버 로딩 
+			// get the Connection object 
+			conn = DriverManager.getConnection(url, dbuser, dbpasswd);	// 2. connection 연결을 통해 객체 생성. 
+			// 접속할 수 있는 connection객체를 얻어왔다.
+			String sql = "SELECT description,role_id FROM role WHERE role_id = ?";
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, roleId);
+			rs = ps.executeQuery();		// query 실행하여 결과값을 rs 객체에 담아온다.
+			
+			if(rs.next()) {
+				String description = rs.getString(1);		// 전송한 쿼리중 첫번째 값 description 가져오기.
+				int id = rs.getInt("role_id");				// 전송한 쿼리중 두번째 값 role_id 값 가져오기. 칼럼명으로도 가져올 수 있음.
+				
+				role = new Role(id,description);			// role 객체를 생성하면서 값 초기화.
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			if(rs != null) {		// ResultSet 객체 close
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if(ps != null) {
+				try {				// PreparedStatement 객체 close  
+					ps.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if(conn != null) {		// Connection 객체 close 
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+
+
+		}
+		
+		
+		return role;
+	}
+}
+
+```
+
+```java
+
+//Role.java
+package kr.or.connect.jdbcexam.dto;
+
+public class Role {
+	private Integer roleId;					// 칼럼 두개를 담을 변수를 선언.
+	private String description;
+	
+	public Role() {
+		
+	}
+	
+	// 객체 생성자.
+	public Role(Integer roleId, String description) {
+		super();
+		this.roleId = roleId;
+		this.description = description;
+		
+	}
+	
+	// getter & setter
+	public Integer getRoleId() {
+		return roleId;
+	}
+	public void setRoleId(Integer roleId) {
+		this.roleId = roleId;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	@Override
+	public String toString() {
+		return "Role [roleId=" + roleId + ", description=" + description + "]";
+	}
+
+}
+```
