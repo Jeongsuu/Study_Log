@@ -53,11 +53,13 @@ EL은 값을 표현하는데 사용되는 스크립트 언어로서 JSP 기본 �
 <title>Insert title here</title>
 </head>
 <body>
+<!-- JSP를 이용한 스코프변수 접근 방법-->
 pageContext.getAttribute("p1") : <%=pageContext.getAttribute("p1") %>	<br>
 request.getAttribute("r1") : <%= request.getAttribute("r1") %>	<br>
 session.getAttribute("s1") : <%= session.getAttribute("s1") %>	<br>
 application.getAttribute("a1") : <%=application.getAttribute("a1")%>	<br>
 
+<!-- EL을 이용한 스코프변수 접근 방법-->
 pageContext.getAttribute("p1") :${pageScope.p1} <br>
 request.getAttribute("r1") :${requestScope.r1} <br>
 session.getAttribute("s1") :${sessionScope.s1} <br>
