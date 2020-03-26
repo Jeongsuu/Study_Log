@@ -434,3 +434,87 @@ Spring은 빈을 생성할 떄 기본적으로 싱글톤 객체로 생성한다.
 <br>싱글톤 : 메모리에 하나만 생성한다.<br>
 메모리에 객체가 하나만 생성될 경우, 해당 객체를 동시에 이용하는 것을 막기 위해 scope를 주어 해결할 수 있다.
 
+---
+
+### Spring 사용방법
+
+1. Maven 프로젝트 생성
+2. `pom.xml` maven 플러그인 추가
+3. Spring Bean Factory를 이용하여 Bean 객체 이용
+
+---
+<br>
+
+이번엔 `Java Config`와 `Annotation`을 이용해 스프링에서 사용하는 빈을 정의하고 DI를 사용하는 방법에 대해 알아본다.
+
+#### 핵심개념 
+-	AnnotationConfigApplicationContext
+-	@Configuration
+-	@ComponentScan
+-	@Component
+-	@Autowired
+
+
+```java
+// ApplicationConfig.java
+
+package kr.or.connect.diexam01;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+// @Configuration 어노테이션을 통해 "이 클래스가 config파일 이에요"를 알려준다. 
+// @configuration -> 스프링 설정 클래스 지정 
+
+@Configuration
+public class ApplicationConfig {
+	
+	@Bean
+	public Car car(Engine e) {
+		Car c = new Car();
+		c.setEngine(e);
+		return c;
+	}
+	
+	// 해당 메서드가 실행되면 Ca 라는 객체를 만들고 Car 객체의 SetEngine() 이라는 메서드에 전받은 엔진을 넣어 생성해서 Car 객체를 리턴한다. 
+	
+	@Bean
+	public Engine engine() {
+		return new Engine();
+	}
+	
+}
+```
+
+`Annotation`을 활용한 `config` 클래스 생성.
+
+```java
+package kr.or.connect.diexam01;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class ApplicationContextExam03 {
+
+	public static void main(String[] args) {
+		
+		/* 기존 코
+		ApplicationContext ac = new ClassPathXmlApplicationContext("appliactionContext.xml");
+		
+		Car car = (Car) ac.getBean("c");
+		car.run();
+		*/
+
+		ApplicationContext ac = new AnnotationConfigApplicationContext(ApplicationConfig.class);
+		//Annotation config메소드를 통해 ApplicationContext( 스프링 팩토리 )를 만든다.
+		
+		//Car car = (Car) ac.getBean("car");
+		Car car = (Car) ac.getBean(Car.class);			// 반환 Type이 Car인 클래스를 가져와서 빈을 만들겠다. 
+		car.run();
+		
+	}
+
+}
+
+```
