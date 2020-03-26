@@ -489,6 +489,7 @@ public class ApplicationConfig {
 `Annotation`을 활용한 `config` 클래스 생성.
 
 ```java
+ApplicationContextEam03
 package kr.or.connect.diexam01;
 
 import org.springframework.context.ApplicationContext;
@@ -499,7 +500,7 @@ public class ApplicationContextExam03 {
 
 	public static void main(String[] args) {
 		
-		/* 기존 코
+		/* 기존 코드는 Xml 설정파일을 읽어와서 빈 팩토리 생성 
 		ApplicationContext ac = new ClassPathXmlApplicationContext("appliactionContext.xml");
 		
 		Car car = (Car) ac.getBean("c");
@@ -507,7 +508,7 @@ public class ApplicationContextExam03 {
 		*/
 
 		ApplicationContext ac = new AnnotationConfigApplicationContext(ApplicationConfig.class);
-		//Annotation config메소드를 통해 ApplicationContext( 스프링 팩토리 )를 만든다.
+		//Annotation config메소드를 통해 ApplicationContext( 빈  팩토리 )를 만든다.
 		
 		//Car car = (Car) ac.getBean("car");
 		Car car = (Car) ac.getBean(Car.class);			// 반환 Type이 Car인 클래스를 가져와서 빈을 만들겠다. 
