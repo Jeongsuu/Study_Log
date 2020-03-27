@@ -20,6 +20,8 @@
 
 `command + e` : 최근 열었던 파일
 
+`command + n` : Generate 기능 → 생성자나 getter, setter 메소드 그냥 만들어주는 기능
+
 스프링 프레임워크(이하, 스프링)를 사용한 예제 코드를 보며 스프링의 주요 철학과 기능을 빠르게 학습한다.
 
 ### 강좌 목표
@@ -213,8 +215,85 @@ Owner Type 의 owner 객체를 생성하고 model에 이를 넣는다.
 
  
 
+---
+
+---
+
 코드 수정 과제
 
-- LastName이 아니라 FirstName으로 검색하는 기능
-- 정확히 일치하는 키워드가 아니여도 그냥 키워드가 들어가있으면 검색해주는 기능
-- Owner에 Age 필드 추가
+-  LastName이 아니라 FirstName으로 검색하는 기능
+-  정확히 일치하는 키워드가 아니여도 그냥 키워드가 들어가있으면 검색해주는 기능
+-  Owner에 Age 필드 추가
+
+1. **LastName이 아니라 FirstName으로 검색하는 기능**
+    - 로그를 보고 호출하는 메소드를 트레이싱하면서 `last` → `first`로 변경하고
+
+    @Query("SELECT DISTINCT owner FROM Owner owner left join fetch owner.pets WHERE owner.lastName LIKE :lastName%")
+    	@Transactional(readOnly = true)
+    	Collection<Owner> findByLastName(@Param("lastName") String lastName);
+
+기존쿼리와 `findByLastName` 메소드를 firstName을 기준으로 찾아내도록 변경한다.
+
+    @Query("SELECT DISTINCT owner FROM Owner owner left join fetch owner.pets WHERE owner.firstName LIKE :firstName%")
+        @Transactional(readOnly = true)
+        Collection<Owner> findByFirstName(@Param("firstName") String firstName);
+
+**2. 정확히 일치하는 키워드가 아니여도 검색하는 기능**
+
+핵심은 와일드카드다.
+
+위에서 Query를 전송하는 부분
+
+    @Query("SELECT DISTINCT owner FROM Owner owner left join fetch owner.pets WHERE owner.firstName LIKE :firstName%")
+
+맨 꼬리쪽을 보면 LIKE 절에  ` :firstName%` 을 보면 알 수 있듯, 뒷 부분에 와일드카드를 사용한다.
+
+이를 %:firstName% 으로 변경한다.  앞쪽에 와일드카드를 하나 더 준다.
+
+콜론 부분 `:firstName` 이 부분이 입력받은 키워드로 바뀌기 때문에 중간에 넣으면 안된다.
+
+**3. Owner에 age 필드 추가**
+
+    //owner.java
+    private Integer age;
+    
+        public Integer getAge() {
+            return age;
+        }
+    
+        public void setAge(Integer age) {
+            this.age = age;
+        }
+
+Owner 클래스에 age값과 getter, setter 메소드를 추가해준다.
+
+이후 `[application.properties](http://application.properties)` 파일에 들어가면 db 스키마 위치를 알려주는데 이를 따라가서 owners 테이블을 수정한다.
+
+    CREATE TABLE owners (
+      id         INTEGER IDENTITY PRIMARY KEY,
+      first_name VARCHAR(30),
+      last_name  VARCHAR_IGNORECASE(30),
+      age        INTEGER,
+      address    VARCHAR(255),
+      city       VARCHAR(80),
+      telephone  VARCHAR(20)
+    );
+
+age를 추가한다.
+
+이후 db의 데이터 파일을 들어가서
+
+    INSERT INTO owners VALUES (1, 'George', 'Franklin', 20,'110 W. Liberty St.', 'Madison', '6085551023');
+    INSERT INTO owners VALUES (2, 'Betty', 'Davis', 20, '638 Cardinal Ave.', 'Sun Prairie', '6085551749');
+    INSERT INTO owners VALUES (3, 'Eduardo', 'Rodriquez', 20, '2693 Commerce St.', 'McFarland', '6085558763');
+    INSERT INTO owners VALUES (4, 'Harold', 'Davis', 20, '563 Friendly St.', 'Windsor', '6085553198');
+    INSERT INTO owners VALUES (5, 'Peter', 'McTavish', 20, '2387 S. Fair Way', 'Madison', '6085552765');
+    INSERT INTO owners VALUES (6, 'Jean', 'Coleman', 20, '105 N. Lake St.', 'Monona', '6085552654');
+    INSERT INTO owners VALUES (7, 'Jeff', 'Black', 20, '1450 Oak Blvd.', 'Monona', '6085555387');
+    INSERT INTO owners VALUES (8, 'Maria', 'Escobito', 20, '345 Maple St.', 'Madison', '6085557683');
+    INSERT INTO owners VALUES (9, 'David', 'Schroeder', 20, '2749 Blackhawk Trail', 'Madison', '6085559435');
+    INSERT INTO owners VALUES (10, 'Carlos', 'Estaban', 20, '2335 Independence La.', 'Waunakee', '6085555487');
+
+아까 삽입한 age위치 (4번째 멤버)에 나이값을 모두 추가해준다.
+
+이 강의는 한번 더 보기
