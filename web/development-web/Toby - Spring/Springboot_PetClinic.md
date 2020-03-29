@@ -267,6 +267,12 @@ Owner Type 의 owner 객체를 생성하고 model에 이를 넣는다.
 
 Owner 클래스에 age값과 getter, setter 메소드를 추가해준다.
 
+그리고 실행시켜보면 `org.hsqldb.HsqlException: user lacks privilege or object not found: OWNER0_.AGEf` 라는 에러를 확인할 수 있다.
+
+이는 DB에 AGE라는 컬럼이 없기 때문에 발생하는 에러다.
+
+따라서 해당 컬럼을 DB 스키마에 추가 해줘야 한다.
+
 이후 `[application.properties](http://application.properties)` 파일에 들어가면 db 스키마 위치를 알려주는데 이를 따라가서 owners 테이블을 수정한다.
 
     CREATE TABLE owners (
@@ -280,6 +286,12 @@ Owner 클래스에 age값과 getter, setter 메소드를 추가해준다.
     );
 
 age를 추가한다.
+
+이후 실행시켜보면 `org.hsqldb.HsqlException: row column count mismatch` 에러가 발생한다.
+
+이름 그대로 row&column의 매치가 적절치 못하여 발생하는 에러다.
+
+이거는 데이터에 맞게 값을 INSERT 해주지 않아서 발생하는 에러다.
 
 이후 db의 데이터 파일을 들어가서
 
@@ -295,5 +307,23 @@ age를 추가한다.
     INSERT INTO owners VALUES (10, 'Carlos', 'Estaban', 20, '2335 Independence La.', 'Waunakee', '6085555487');
 
 아까 삽입한 age위치 (4번째 멤버)에 나이값을 모두 추가해준다.
+
+이후 `View`에 나이를 입력할 수 있는 폼을 만들어준다.
+
+    <h2>Owner</h2>
+      <form th:object="${owner}" class="form-horizontal" id="add-owner-form" method="post">
+        <div class="form-group has-feedback">
+          <input
+            th:replace="~{fragments/inputField :: input ('First Name', 'firstName', 'text')}" />
+          <input
+            th:replace="~{fragments/inputField :: input ('Last Name', 'lastName', 'text')}" />
+            <input
+                    th:replace="~{fragments/inputField :: input ('Age', 'age', 'text')}" />
+          <input
+            th:replace="~{fragments/inputField :: input ('Address', 'address', 'text')}" />
+          <input
+            th:replace="~{fragments/inputField :: input ('City', 'city', 'text')}" />
+          <input
+            th:replace="~{fragments/inputField :: input ('Telephone', 'telephone', 'text')}" />
 
 이 강의는 한번 더 보기
