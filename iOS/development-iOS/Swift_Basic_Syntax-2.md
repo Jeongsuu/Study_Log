@@ -1,5 +1,4 @@
 # Swift 기본 문법 2
-
 ---
 
 ---
@@ -455,4 +454,134 @@ Swift의 열거형은 타 언어 열거형과 차이가 있다.
     		print("불금")
     	case .sat, .sun:
     		print("주말")
+    }
+
+### 클로저
+
+---
+
+1. **클로저**
+- 클로저는 실행 가능한 코드 블럭이다.
+- 함수와 기능이 매우 유사하지만 이름 정의가 필요없다. 매개변수 전달과 반환 값이 존재한다는 점은 동일하다.
+람다식과 유사함!
+- 즉, "함수는 이름이 있는 클로저!" 라고 보면 된다.
+- 일급 객체로 전달인자, 변수, 상수 등에 저장 및 전달이 가능하다.
+
+**2. 기본 클로저 문법**
+
+- 클로저는 중괄호 "{}" 로 감싸져 있다.
+- 괄호를 이용해 파라미터를 정의한다.
+- "→" 를 이용해 반환 타입을 명시한다.
+- `in` 키워드를 이용해 실행 코드와 분리한다.
+
+    { (매개변수) -> 반환타입 in
+    	실행 코드
+    }
+
+**3. 클로저 사용**
+
+    //sum 이라는 상수에 클로저 할당 , 일급 객체로 변수, 상수 등에 저장 및 전달 가능!
+    
+    let sum:(int, int) -> { (a:int, b:int) in
+    	return a+b
+    
+    let sumResult: Int = sum(1,2)
+    print(sumResult) // 3
+
+**4. 함수의 전달인자로서의 클로저**
+
+- 클로저는 주로 함수의 전달인자로 많이 사용된다.
+- 함수 내부에서 원하는 코드블럭을 실행할 수 있다.
+
+    let add:(int, int) -> Int
+    add = { (a:Int, b:Int) in
+    	return a+b
+    }
+    
+    let substract: (Int, Int) -> Int
+    substract = { (a:Int, b:Int) in
+    	return a-b
+    }
+    
+    let divide: (Int, Int) -> Int
+    divide = { (a:Int, b:Int) in
+    	return a/b
+    }
+    
+    func calculate(a: Int, b: Int, method:(Int, Int) -> Int) -> Int {
+    	return method(a, b)
+    }
+    
+
+### 상속
+
+---
+
+- 상속은 클래스, 프로토콜 등에서 가능하다.
+- 열거형, 구조체는 상속이 불가하다.
+- 스위프트의 클래스는 단일 상속으로, 다중 상속을 지원하지 않는다.
+
+1. **문법**
+
+    class 이름: 상속받을 클래스 명 {
+    	/* 구현 */
+    }
+
+**2. 사용**
+
+- final 키워드를 사용하여 재정의(override) 를 방지할 수 있다.
+- static 키워드를 사용해 타입 메서드를 만들면 재정의가 불가능하다.
+- class 키워드를 사용해 타입 메서드를 만들면 재정의가 가능하다.
+- class 앞에 final 을 붙이면 static과 동일한 효과를 지닌다.
+- override 키워드를 사용해 부모 클래스의 메서드를 재정의 할 수 있다.
+
+    class Person {
+    	var name: String = ""
+    	
+    	func selfIntroduce() {
+    		print("\(name)")
+    	}
+    
+    	//final 키워드를 이용해 재정의 방지
+    	final func sayHello() {
+    		print("hello")
+    	}
+    
+    	// 타입 메서드
+        // 재정의 불가 타입 메서드 - static
+        static func typeMethod() {
+            print("type method - static")
+        }
+        
+        // 재정의 가능 타입 메서드 - class
+        class func classMethod() {
+            print("type method - class")
+        }
+        
+        // 재정의 가능한 class 메서드라도 
+        // final 키워드를 사용하면 재정의 할 수 없습니다
+        // 메서드 앞의 `static`과 `final class`는 똑같은 역할을 합니다
+        final class func finalCalssMethod() {
+            print("type method - final class")
+        }
+    }
+    
+    // Person을 상속받는 Student
+    class Student: Person {
+        var major: String = ""
+        
+        override func selfIntroduce() {
+            print("저는 \(name)이고, 전공은 \(major)입니다")
+        }
+        
+        override class func classMethod() {
+            print("overriden type method - class")
+        }
+        
+        // static을 사용한 타입 메서드는 재정의 할 수 없습니다
+    //    override static func typeMethod() {    }
+        
+        // final 키워드를 사용한 메서드, 프로퍼티는 재정의 할 수 없습니다
+    //    override func sayHello() {    }
+    //    override class func finalClassMethod() {    }
     }
