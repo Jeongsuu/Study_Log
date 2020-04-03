@@ -1,4 +1,4 @@
-# delegate.md
+## delegate 
 
 ---
 
@@ -195,3 +195,92 @@ ViewController가 `UITableVieweDataSource` 프로토콜을 준수하지 않고 �
  
 
 채택한 프로토콜 내 선언 되어진 함수 중 `optional` 이 붙지 않은 함수는 필수로 `swift` 파일에  구현해야한다.
+
+---
+
+---
+
+---
+
+### Delelgation
+
+델리게이션에 대해 자세히 살펴보기 전에, Delegation의 사전적 의미를 알아두자.
+
+Delegate : 대표(자), 사절, 위임, 대리(자)
+위임하다, (대표를) 선정하다
+
+### 델리게이션 디자인 패턴(Delegation Design Pattern)
+
+---
+
+Delegation 이라는 단어에서 예측할 수 있듯이, 
+
+델리게이션은 하나의 객체가 다른 객체를 대신해 동작 또는 조정할 수 있는 기능을 제공한다.
+
+- 델리게이션 디자인 패턴은 Foundation, UIKit, AppleKit 그리고 Cocoa Touch등 애플의 프레임워크에서 광범위하게 활용하고 있다.
+- 주로 프레임워크 객체가 위임을 요청하며, 컨트롤러 객체가 위임을 받아 특정 이벤트에 대한 기능을 구현한다.
+- 예시로 `UITextFieldDelegate` 를 살펴본다.
+
+    // 대리자에게 특정 텍스트 필드의 문구를 편집하도록 도와주는 메서드
+    func textFieldShouldBeginEditing(UITextField)
+    
+    // 대리자에게 특정 텍스트 필드의 문구가 편집되고 있음을 알리는 메서드
+    func textFieldDidBeginEditing(UITextField)
+    
+    // 특정 텍스트 필드의 문구를 삭제하려고 할 때 대리자를 호출하는 메서드
+    func textFieldShouldClear(UITextField)
+    
+    // 특정 텍스트 필드의 `Return` 키가 눌렸을 때 대리자를 호출하는 메서드
+    func textFieldShouldReturn(UITextField)
+
+위 메서드에서 알 수 있듯이, 델리게이트는 특정 상황에 대리자에게 메시지를 전달하고 그에 대한 적절한 응답을 받기 위한 목적으로 사용된다.
+
+![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/1d4ee3f6-1ea1-4bb4-8bbd-83066f0a2d30/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/1d4ee3f6-1ea1-4bb4-8bbd-83066f0a2d30/Untitled.png)
+
+### 데이터소스(DataSource)
+
+---
+
+- 델리게이트와 매우 비슷한 역할을 하는 데이터소스가 있다.
+- 델리게이트가 사용자 인터페이스 제어에 관련된 권한을 위임받고, 데이터소스는 데이터를 제어하는 기능을 위임받았다.
+인터페이스 제어 : 델리게이트 , 데이터 제어 : 데이터소스
+
+### 프로토콜(Protocol)
+
+---
+
+- 코코아터치에서 프로토콜을 사용해 델리게이션과 데이터소스를 구현할 수 있다.
+- 객체간 소통을 위한 통신 규약으로 데이터나 메세지를 전달할 때 사용한다.
+- 프로토콜은 특별한 상황에 대한 역할을 정의하고 제시하지만, 세부 기능은 미리 구현해두지 않는다.
+
+델리게이션은 애플의 프레임워크에서 매우 많이 활용되고 있다. 델리게이션 패턴은 꼭 이해하고 넘어가야할 부분이다.
+
+---
+
+---
+
+이전에 작성했던 뮤직 플레이어 앱을 다시본다.
+
+보면 `ViewController.swift` 파일에 아래와 같은 코드가 존재한다.
+
+    do {
+    	try self.player = AVAudioPlayer(data: soundAsset.data)
+    	self.player.delegate = self
+    } catch let error as NSError {
+    	print("플레이어 초기화 실패")
+    	print("코드 : \(error.code)}
+    }
+    
+    self.progressSlider.maximumvalue = Float(self.player.duration)
+    self.progressSlider.minimumValue = 0
+    self.progressSlider.value = Float(self.player.currentTime)
+    
+    // 
+
+    	self.player.delegate = self
+
+해당 코드의 의미는 이 뷰 컨트롤러의 인스턴스가 AVAudioPlayer의 델리게이트로 역할을 수행하겠다는 의미이다.
+
+→ 이 AudioPlayer는 이 뷰 컨트롤러가 나의 델리게이트(대리자)구나!
+
+오류 처리는 try 와 do-catch 문으로 진행한다.
