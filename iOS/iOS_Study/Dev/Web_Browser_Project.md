@@ -101,14 +101,14 @@ class UserDefaults : NSObject
 그렇다면 `UserDefaults`가 제공하는 주요 프로퍼티와 메서드들에 대해 살펴보자.
 
 ```swift
-class var standard: UerDefaults
+class var standard: UserDefaults
 ```
 
 사용자의 기본값을 갖는 객체를 얻어오는 방법이다.
 
 공유 기본값을 갖는 객체를 반환받는다.
 
-이후 기본값들을 가져오기 위한 메서드들을 살펴본다.
+이후 그 객체로부터 기본값들을 가져오기 위한 메서드들을 살펴본다.
 
 우리는 이번 프로젝트의 기능에서 사용자가 사용하던 `URL`을 가져와야 하므로 관련 메서드를 살펴보도록 한다.
 
@@ -367,3 +367,19 @@ extension ViewController: WKNavigationDelegate {
 
 
 ```
+
+<br>
+<br>
+
+---
+---
+
+## Reference
+
+1. [UserDefaults 공식 문서](https://developer.apple.com/documentation/foundation/userdefaults)
+
+2. [WebKitWebView 공식 문서](https://developer.apple.com/documentation/webkit/wkwebview)
+
+3. [UIApplication 공식 문서](https://developer.apple.com/documentation/uikit/uiapplication)
+
+4. [UIApplication 설명 참고 - 티스토리](https://zeddios.tistory.com/539)
