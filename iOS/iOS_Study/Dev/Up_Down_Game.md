@@ -30,9 +30,11 @@
 
 [4. Gesture Recognizer](#4.-Gesture-Recognizer)
 
+[5. 기능 구현](#5.-기능-구현)
+
 ---
 
-### 1. 인터페이스 구성
+### 1. 인터페이스 구성 
 
 ![image](https://user-images.githubusercontent.com/33051018/79130716-680d3b80-7de2-11ea-935e-513232fc28dd.png)
 
@@ -136,11 +138,118 @@
 ```swift
 @IBAction func tapBackground(_ sender: UITapGestureRecognizer) {
         print("tapBackground called")
-        inputField.resignFirstResponder()
+        self.inputField.resignFirstResponder()
     }
 ```
 
 위와같이 `tapBackground` 함수 내에 `TextField` 인스턴스의 메서드를  호출해주니 `Tap Gesture Recognizer`가 발생하면 키보드가 사라진다!
 
+<br>
+<br>
 
+### 5. 기능 구현
+---
+
+임의의 난수를 생성하고 이를 사용자가 예측할 수 있도록 예측값에 따른 `up`, `down` 결과를 표시해주도록 한다.
+
+```swift
+//
+//  ViewController.swift
+//  UpDown
+//
+//  Created by Yeojaeng on 2020/04/13.
+//  Copyright © 2020 Yeojaeng. All rights reserved.
+//
+
+import UIKit
+
+// ViewController 클래스의 인스턴스가 스토리보드에 올라가있는 그 View Controller다.
+
+class ViewController: UIViewController {
+    
+    //MARK:- Properties
+    //MARK:- IBOutlets
+    
+    @IBOutlet weak var resultLabel: UILabel!
+    @IBOutlet weak var turnCountLabel: UILabel!
+    @IBOutlet weak var inputField: UITextField!
+    
+    //MARK:- Stored Proeprties
+    var randomNumber: UInt32 = 0    // 32bit unsigned Int
+    var turnCount: Int = 0
+    
+    //MARK:- Methods
+    
+    @IBAction func touchUpSubmitButton(_ sender: UIButton) {
+        print("touchUpSubmitButton called")
+        
+        guard let inputText = self.inputField.text,     // inputFied 공백여부 체크
+            inputText.isEmpty == false else {
+                print("입력값 없음")
+                return
+        }
+        
+        guard let inputNumber: UInt32 = UInt32(inputText) else {        // UInt32 포맷여부 체크
+            print("입력값 포맷 잘못 되었음")
+            return
+        }
+        
+        turnCount += 1
+        self.turnCountLabel.text = "\(turnCount)"
+        
+        if inputNumber > randomNumber {         //입력값과 랜덤값의 대소 비교에 따른 출력
+            self.resultLabel.text = "UP!"
+        } else if inputNumber < randomNumber {
+            self.resultLabel.text = "DOWN"
+        } else {
+            self.resultLabel.text = "정답!"
+        }
+    }
+    
+    
+    @IBAction func touchUpResetButton(_ sender: UIButton) {
+        print("touchUpResetButton called")
+        self.initializeGame()
+    }
+    
+    @IBAction func tapBackground(_ sender: UITapGestureRecognizer) {
+        print("tapBackground called")
+        self.inputField.resignFirstResponder()
+    }
+    
+    //MARK:- Custom Methods
+    
+    func initializeGame() {
+        
+        self.randomNumber = arc4random() % 25
+        //arc4random() : 임의의 부호없는 정수 반환, 그래서 UInt32 타입으로 선언한것.
+        
+        self.turnCount = 0
+        self.resultLabel.text = "Start!"
+        self.turnCountLabel.text = "\(turnCount)"
+        self.inputField.text = nil
+        
+        print("random number: \(self.randomNumber)")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+        self.initializeGame()
+        
+    }
+
+}
+
+```
+
+
+**정리**
+
+- `@IBAction` 과 `@IBOutlet` 은 모든 iOS 애플리케이션에서 정말 빈번히 사용되니 꼭 익혀두기.
+    - `@IB` 어노테이션을 통해 선언한 함수명 또는 변수명 변경시에는  `Editor` -> `Refactor` -> `Rename` 기능을 이용하도록 한다. (오류 방지)
+
+- 공식 개발자 문서를 참고하는 습관 기르기.
+
+ 
 
