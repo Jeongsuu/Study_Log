@@ -170,59 +170,61 @@ class ViewController: UIViewController {
     //MARK:- Properties
     //MARK:- IBOutlets
     
-    @IBOutlet weak var resultLabel: UILabel!
-    @IBOutlet weak var turnCountLabel: UILabel!
-    @IBOutlet weak var inputField: UITextField!
+    @IBOutlet weak var resultLabel: UILabel!                        // resultLabel 인스턴스 연결
+    @IBOutlet weak var turnCountLabel: UILabel!                     // turnCountLabel 인스턴스 연결
+    @IBOutlet weak var inputField: UITextField!                     // inputField 인스턴스 연결
     
     //MARK:- Stored Proeprties
-    var randomNumber: UInt32 = 0    // 32bit unsigned Int
+    var randomNumber: UInt32 = 0                                     // 32bit unsigned Int
     var turnCount: Int = 0
     
     //MARK:- Methods
-    
-    @IBAction func touchUpSubmitButton(_ sender: UIButton) {
+
+    @IBAction func touchUpSubmitButton(_ sender: UIButton) {                // Submit 버튼 클릭시 실행할 Action 정의
         print("touchUpSubmitButton called")
-        
-        guard let inputText = self.inputField.text,     // inputFied 공백여부 체크
+    
+        guard let inputText = self.inputField.text,                    // Optional Binding -> inputFied 공백여부 체크
             inputText.isEmpty == false else {
                 print("입력값 없음")
                 return
         }
         
-        guard let inputNumber: UInt32 = UInt32(inputText) else {        // UInt32 포맷여부 체크
+        guard let inputNumber: UInt32 = UInt32(inputText) else {        //  Optional Binding -> UInt32 포맷여부 체크
             print("입력값 포맷 잘못 되었음")
             return
         }
         
-        turnCount += 1
-        self.turnCountLabel.text = "\(turnCount)"
+        turnCount += 1                                                  // submit 버튼 클릭시 turnCount ++
+        self.turnCountLabel.text = "\(turnCount)"                       // update tunrCountLabel.text
         
-        if inputNumber > randomNumber {         //입력값과 랜덤값의 대소 비교에 따른 출력
-            self.resultLabel.text = "UP!"
+        if inputNumber > randomNumber {                                 // 입력값과 랜덤값의 대소 비교에 따른 출력
+            self.resultLabel.text = "DOWN!"
         } else if inputNumber < randomNumber {
-            self.resultLabel.text = "DOWN"
+            self.resultLabel.text = "UP!"
         } else {
-            self.resultLabel.text = "정답!"
+            self.resultLabel.text = "CORRECT!"
         }
     }
     
-    
-    @IBAction func touchUpResetButton(_ sender: UIButton) {
+     
+    @IBAction func touchUpResetButton(_ sender: UIButton) {             // Reset 버튼 클릭시 실행할 Action 함수 정의
         print("touchUpResetButton called")
-        self.initializeGame()
+        self.initializeGame()                                           // initializeGame() 함수 호출
     }
     
-    @IBAction func tapBackground(_ sender: UITapGestureRecognizer) {
+    @IBAction func tapBackground(_ sender: UITapGestureRecognizer) {    // TapGesture 인식시 실행할 Action 함수 정의
         print("tapBackground called")
-        self.inputField.resignFirstResponder()
+        self.inputField.resignFirstResponder()                          // 키보드 내리기
+//      self.view.endEditing(true)
+//      self.inputFIeld.endEditing(true)
     }
     
     //MARK:- Custom Methods
     
-    func initializeGame() {
+    func initializeGame() {                                             // initializeGame 함수 정의
         
         self.randomNumber = arc4random() % 25
-        //arc4random() : 임의의 부호없는 정수 반환, 그래서 UInt32 타입으로 선언한것.
+        //arc4random() : 임의의 Unsinged Int type 반환, 그래서 변수 randomNumber의 타입을 UInt32 선언한것.
         
         self.turnCount = 0
         self.resultLabel.text = "Start!"
@@ -235,21 +237,22 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        self.initializeGame()
+        self.initializeGame()                                           // initializeGame() 함수 호출
         
     }
 
 }
+
 
 ```
 
 
 **정리**
 
-- `@IBAction` 과 `@IBOutlet` 은 모든 iOS 애플리케이션에서 정말 빈번히 사용되니 꼭 익혀두기.
-    - `@IB` 어노테이션을 통해 선언한 함수명 또는 변수명 변경시에는  `Editor` -> `Refactor` -> `Rename` 기능을 이용하도록 한다. (오류 방지)
+- **`@IBAction` 과 `@IBOutlet` 은 모든 iOS 애플리케이션에서 정말 빈번히 사용되니 꼭 익혀두기.**
+    - **`@IB` 어노테이션을 통해 선언한 함수명 또는 변수명 변경시에는  `Editor` -> `Refactor` -> `Rename` 기능을 이용하도록 한다. (오류 방지)**
 
-- 공식 개발자 문서를 참고하는 습관 기르기.
+- **공식 개발자 문서를 참고하는 습관 기르기.**
 
  
 
