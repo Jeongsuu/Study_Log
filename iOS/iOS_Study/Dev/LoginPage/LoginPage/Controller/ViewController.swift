@@ -6,6 +6,7 @@
 //  Copyright © 2020 Yeojaeng. All rights reserved.
 //
 
+// MainViewController
 import UIKit
 import SnapKit
 
@@ -13,6 +14,15 @@ class ViewController: UIViewController {
     
     //MARK:- Properties
     
+    // 백그라운드 뷰 객체 생성
+    let backgroundView: UIView = {
+        let theView = UIView()
+        theView.backgroundColor = .white
+        
+        return theView
+    }()
+    
+    // id필드 객체 생성
     let idField: UITextField = {
         let theIdField = UITextField()
         theIdField.placeholder = " 이메일을 입력해주세요"
@@ -20,9 +30,11 @@ class ViewController: UIViewController {
         theIdField.font = UIFont(name: "system", size: 14.0)
         theIdField.layer.borderWidth = 0.5
         theIdField.layer.cornerRadius = 5
+        
         return theIdField
     }()
     
+    // pw필드 객체 생성
     let pwField: UITextField = {
         let thePwField = UITextField()
         thePwField.placeholder = " 패스워드를 입력해주세요"
@@ -34,12 +46,13 @@ class ViewController: UIViewController {
         return thePwField
     }()
     
+    // 로그인버튼 객체 생성
     let loginButton: UIButton = {
         let theLoginBtn = UIButton()
         theLoginBtn.setTitle("로그인", for: .normal)
         theLoginBtn.setTitleColor(.blue, for: .normal)
         theLoginBtn.titleLabel?.font = UIFont(name: "system", size: 14.0)
-        theLoginBtn.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+        theLoginBtn.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)                  // Target-Action으로 @IBAction 대체
         
         return theLoginBtn
     }()
@@ -49,7 +62,7 @@ class ViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         print(#function)
-        self.navigationController?.setNavigationBarHidden(true, animated: true)
+        self.navigationController?.setNavigationBarHidden(true, animated: true)                 // 메인 뷰 네비게이션 바 숨기기
         
     }
     
@@ -58,13 +71,20 @@ class ViewController: UIViewController {
         print(#function)
         self.navigationItem.title = "로그인"
         
-        
+        backgroundViewConstraints()
         idFieldConstraints()
         pwFieldConstraints()
         loginButtonConstraints()
     }
     
+    //MARK:- MakeConstraints
     
+    func backgroundViewConstraints() {
+        view.addSubview(backgroundView)
+        backgroundView.snp.makeConstraints { (make) in
+            make.top.leading.trailing.bottom.equalToSuperview()
+        }
+    }
     
     func idFieldConstraints() {
         view.addSubview(idField)
@@ -94,12 +114,13 @@ class ViewController: UIViewController {
             make.size.equalTo(CGSize(width: 150, height: 50))
         }
     }
-
+    
 }
 
 extension ViewController {
     
     //MARK:- Custom Methods
+    
     
     @objc func loginButtonTapped() {
         
@@ -113,12 +134,8 @@ extension ViewController {
             return
         }
         
-        
         let SecondVC = SecondViewController()
-        SecondVC.modalPresentationStyle = .fullScreen
-        present(SecondVC, animated: true, completion: nil)
-        
-        
+        self.navigationController?.pushViewController(SecondVC, animated: true)
         
     }
     
@@ -132,7 +149,6 @@ extension ViewController {
             toBeFirstResponder?.becomeFirstResponder()
         }
         
-        
         let cancelAction: UIAlertAction = UIAlertAction(title: "취소",
                                                         style: .cancel, handler: nil)
         
@@ -141,7 +157,6 @@ extension ViewController {
         
         self.present(alert, animated: true)
     }
-    
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
