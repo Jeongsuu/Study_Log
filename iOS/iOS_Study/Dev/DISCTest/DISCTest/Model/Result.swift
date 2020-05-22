@@ -26,6 +26,7 @@ struct Result: Codable {
         
         do {
             let result: Result = try JSONDecoder().decode(Result.self, from: dataAsset.data)
+            // 가져온 데이터 값을 Result 타입으로 디코딩해라.
             self = result
         } catch {
             return nil

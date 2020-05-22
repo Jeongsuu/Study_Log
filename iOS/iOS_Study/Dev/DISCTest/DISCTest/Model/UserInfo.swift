@@ -15,9 +15,10 @@ class UserInfo {
     
     // Instance Properties
     var name: String!
-    let score: Score = Score()
     
-    var hightestScoreResult: Result.Info? {
+    let score: Score = Score()              // Score 객체 생성
+    
+    var hightestScoreResult: Result.Info? {     // Computed Property
         let hightest: Int = max(self.score.d, self.score.i, self.score.s, self.score.c)
         switch hightest{
         case self.score.d:

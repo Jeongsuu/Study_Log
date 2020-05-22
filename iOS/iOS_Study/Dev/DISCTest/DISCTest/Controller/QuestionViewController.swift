@@ -13,7 +13,7 @@ class QuestionViewController: UIViewController {
     // IB에서 설정한 버튼의 tag
     enum ButtonTag: Int {
         case d = 101
-        case i, s, c
+        case i, s, c            // 102, 103, 104
     }
     
     //MARK:- Properties
@@ -21,17 +21,19 @@ class QuestionViewController: UIViewController {
     
     @IBOutlet weak var backButton: UIButton!
     
+    //MARK: Lifecycle method
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.questionIndex = self.questionIndex ?? 0
+        self.questionIndex = self.questionIndex ?? 0            // Optional Unwrapping , Default Value Setting
         
         if self.questionIndex < 1 {
             self.backButton.isHidden = true
         }
         
-        let question: Question = Question.all[questionIndex]
+        let question: Question = Question.all[questionIndex]            // 현재 퀴즈 데이터 가져오기
         
+        // viewWithTag()를 이용해 Tag값을 기반으로 해당되는 버튼을 가져와서 UIButton으로 DownCasting
         guard let dButton: UIButton = self.view.viewWithTag(ButtonTag.d.rawValue) as? UIButton else {return}
         dButton.setTitle(question.d, for: .normal)
         
@@ -51,6 +53,7 @@ class QuestionViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
+    // 클릭한 버튼의 태그값을 가져와 이를 기반으로 싱글턴 객체의 해당 태그 값 올리기
     @IBAction func touchUpAnswerButton(_ sender: UIButton) {
         guard let tag: ButtonTag = ButtonTag(rawValue: sender.tag) else {       //응답 버튼 여부 확인
             return

@@ -26,8 +26,8 @@ class ViewController: UIViewController {
 
     @IBAction func touchUpStartButton(_ sender: UIButton) {
         
-        guard let name: String = self.nameField.text,
-            name.isEmpty == false else {
+        guard let name: String = self.nameField.text,               // Optional Binding
+            name.isEmpty == false else {                            // 이름이 입력되지 않은 경우 경고창 띄우기.
                 let alert: UIAlertController
                 alert = UIAlertController(title: "알림", message: "이름을 입력해주세요.", preferredStyle: .alert)
                 
@@ -39,9 +39,9 @@ class ViewController: UIViewController {
                 return
         }
         
-        UserInfo.shared.name = self.nameField.text
+        UserInfo.shared.name = self.nameField.text              // 싱글톤 객체에 접근하여 이름 저장
         
-        self.performSegue(withIdentifier: "PresentTest", sender: nil)
+        self.performSegue(withIdentifier: "PresentTest", sender: nil)   // 세그 실행
     }
     
 }

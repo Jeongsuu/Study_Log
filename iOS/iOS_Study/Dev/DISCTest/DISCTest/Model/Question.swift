@@ -27,6 +27,7 @@ extension Question {
         
         do {
             return try jsonDecoder.decode([Question].self, from:dataAsset.data)
+            // dataAsset.data를 [Question].self 형식으로 디코딩해라
         } catch {
             return []
         }
