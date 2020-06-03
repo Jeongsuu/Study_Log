@@ -1,67 +1,20 @@
-# How to use Firebase in iOS
+# How to use Firebase Auth in iOS
 
-본 문서에서는 `Firebase` 에서 제공하는 실시간 데이터베이스 관련 공식 문서를 살펴보며 이에 대한 사용방법을 기재하도록 한다.
+본 문서에서는 `Firebase` 에서 제공하는 기능 중 하나인 `Auth`에 관하여 기재한다.
 
 <br>
 
 ## How to install and setup on iOS
 ---
 
-`Firebase` 실시간 데이터베이스는 클라우드 기반 호스팅 DB이다.
-
-데이터는 `JSON` 형태로 저장되며 연결된 모든 클라이언트에 실시간으로 동기화된다.
 
 프로젝트의 `Podfile`에 아래 항목을 추가한다.
 
-`pod 'Firebase/Database'`
+`pod 'Firebase'`
 
 pod을 설치한 이후 `.xcwordspace` 파일을 연다.
 
 <br>
-
-## RealTime Database setting
----
-
-`Firebase` 를 사용하기 위해서는 우선 `Firebase`를 초기화 해야 한다.
-
-초기화 방법은 아래와 같다.
-
-1. `AppDelegate` 에 `Firebase` 모듈을 추가한다.
-
-![image](https://user-images.githubusercontent.com/33051018/83332440-2ffc8200-a2d6-11ea-8394-7577bc3f1493.png)
-
-이후 `application:didFinishLaunchingWithOptions:` 메소드에서 `FirebaseApp` 공유 인스턴스를 생성한다.
-
-![image](https://user-images.githubusercontent.com/33051018/83332461-528e9b00-a2d6-11ea-99df-37ba45c704e9.png)
-
-`Firebase` 실시간 데이터베이스가 성공적으로 초기화되었다면 아래와 같은 데이터베이스 참조를 위한 변수를 정의하고 생성한다.
-
-![image](https://user-images.githubusercontent.com/33051018/83332532-a8634300-a2d6-11ea-9d7e-cf02abcf4297.png)
-
-
-
-이제 데이터베이스 사용을 위한 준비는 모두 끝났다.
-
-이제 직접 데이터를 저장해보도록 한다.
-
-<br>
-
-## Saving Data in iOS
----
-
-`Firebase` 실시간 데이터베이스에서 데이터를 쓰기 위해 사용되는 메소드는 4가지가 존재한다.
-
-`setValue` : 정의된 경로(ex: users/<user-id>/<username>)에 데이터를 쓰거나 대체한다.
-
-`childByAutoId` : 데이터 목록에 추가한다. `childByAutoId`를 호출할 때 마다 `Firebase`에서 고유 식별자로도 사용할 수 있는 고유키 (ex: user-posts/<user-id>/<unique-post-id>)를 생성한다.
-
-`updateChildValues` : 정의된 경로의 일부 키를 업데이트 한다.
-
-`runTransactionBlock` : 동시 업데이트에 의해 손상될 수 있는 복잡한 데이터를 업데이트 한다.
-
-<br>
-
-~~..이렇게 봐서는 잘 모르겠다, 직접 적용시켜보자.~~
 
 ## User Registration
 ---
@@ -183,7 +136,7 @@ Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResul
         
     }
     
-}
+}ㅠ
 
 ```
 
@@ -197,7 +150,6 @@ Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResul
 한번 테스트를 진행해봤더니, 정상적으로 로그인이 된다!
 
 
-**계속하여 작성중**
 
 
 <br>
