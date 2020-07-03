@@ -146,3 +146,73 @@ target은 채울 내용을 의미하고 `cell`의 프로퍼티에 순차적으�
 
 만약 이러한 이벤트를 처리하고 싶다면 `delegate`를 연결하고 필요한 메서드를 구현해야 한다.
 
+<br>
+
+<br>
+
+### 테이블뷰 셀의 기본 기능
+
+- `UITableViewCell` 클래스를 상속받는 기본 테이블뷰 셀은 세 가지 프로퍼티가 정의되어 있다.
+    - textLabel: UILabel = 주 제목 레이블
+    - detailTextLabel: UILabel = 부 제목 레이블
+    - imageView: UIImageView = 이미지 표시를 위한 이미지 뷰
+
+<br>
+
+### 커스텀 테이블뷰 셀
+
+- `UITableViewCell` 클래스에서 제공하는 기본 형태를 벗어나 다양한 애플리케이션의 요구를 충족시키기 위해 셀을 커스텀 할 수 있다.
+- 커스텀 셀을 만드는 방법은 크게 두가지이다.
+    - 셀의 콘텐츠뷰에 서브뷰 추가
+    - `UITableViewCell`의 커스텀 서브클래스 만들기
+
+<br>
+
+## DataSource 와 Delegate
+---
+
+`UITableView` 객체는 데이터 소스와 델리게이트가 필연적으로 필요하다.
+
+MVC 프로그래밍 디자인 패턴에 따라 데이터 소스는 애플리케이션의 데이터 모델 M과 관련되어 있으며, 델리게이트는 테이블뷰의 모양과 동작을 관리하기에 컨트롤러 C의 역할에 가깝다.
+
+그리고 마지막 테이블뷰가 뷰 V를 담당한다. 
+
+<br>
+
+**DataSource**
+
+- 테이블뷰 데이터 소스 객체는 `UITableViewDataSource` 프로토콜을 채택한다.
+- 데이터 소스는 테이블 뷰를 생성하고 수정하는데 필요한 정보를 테이블뷰 객체에 제공한다.
+- `UITableView` 객체의 섹션의 수, 행의 수를 알려주어 행의 삽입, 삭제 및 재정렬하는 기능을 선택적으로 구현할 수 있다.
+- `UITableViewDataSource` 프로토콜의 주요 메서드는 아래와 같다.
+
+```swift
+@required
+func tableView(UITableView, cellForRowAt: IndexPath)        // 특정 위치에 표시할 셀을 요청하는 메서드
+
+@required
+func tableView(UITableView, numberOfRowsInSection: Int)     // 각 섹션에 표시할 행의 개수를 지정하는 메서드
+
+@optional
+func numberOfSections(in: UITableView)                      // 테이블뷰 내 섹션을 몇개로 지정할 것인지 묻는 메서드
+
+```
+
+<br>
+
+**Delegate**
+
+- 테이블뷰 델리게이트 객체는 `UITableViewDelegate` 프로토콜을 채택한다.
+- 델리게이트는 테이블뷰의 시각적인 부분 수정, 행의 관리, 액세서리뷰 지원, 개별 행 편집등을 돕는다.
+- `UITableViewDelegate` 프로토콜의 주요 메서드는 아래와 같으며 필수로 구현해야 하는 메서드는 없다.
+
+```swift
+func tableView(UITableView, didSelectRowAt: IndexPath)      // 특정 행이 선택되었음을 알리는 메서드
+
+func tableView(UITableView, didDeselectRowAt: IndexPath)    // 특정 행의 선택이 해제되었음을 알리는 메서드
+
+func tableView(UITableView, willBeginEditingRowAt: IndexPath)       // 테이블뷰가 편집모드로 들어갔음을 알리는 메서드
+
+func tableView(UITableView, didEndEditingRowAt: IndexPath?)         // 테이블뷰가 편집모드에서 빠져나왔음을 알리는 메서드
+```
+
