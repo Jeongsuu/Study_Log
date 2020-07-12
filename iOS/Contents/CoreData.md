@@ -389,4 +389,10 @@ override func viewWillAppear(_ animated: Bool) {
 
 - Xcode는 `Data Model Editor` 기능을 제공한다. 이를 통해 우리는 관리할 `object model`을 생성할 수 있다.
 
-- `Managed Obejct Model`은 entity, attribute, relatioonship 으로 구성된다.
+- `Managed Object Model`은 entity, attribute, relationship 으로 구성된다.
+
+- managed object model 이란 `entity` 라고 불리는 모델 객체를 의미한다. NSManagedObjectModel 클래스를 이용하여 entity에 접근한다.
+
+- `NSPersistentStoreCoordinator` 는 실제 데이터베이스를 관리한다.
+
+- `NSManagedObjectContext` 를 통해 엔티티를 생성하고, 수정하고, 가져온다. 코어데이터와의 상호작용을 위해서는 `NSManagedObjectContext` 를 반드시 사용해야 한다.
