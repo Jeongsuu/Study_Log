@@ -30,7 +30,7 @@
 
 ### Overview
 
-`WidgetKit` 을 사용하면 iOS 홈 화면 도는 macOS 알림센터에 위젯을 배치하여 앱의 컨텐츠에 다이렉트로 접근할 수 있다.
+`WidgetKit` 을 사용하면 iOS 홈 화면 또는 macOS 알림센터에 위젯을 배치하여 앱의 컨텐츠에 다이렉트로 접근할 수 있다.
 
 또한, 위젯은 항상 최신 상태를 유지하므로 사용자는 매번 업데이트된 최신 정보를 한 눈에 볼 수 있다.
 
@@ -38,21 +38,51 @@
 
 small, medium, large 사이즈를 제공하며 화면 내 넓은 범위를 이용하여 다양한 데이터를 보여준다.
 
-또한 사용자가 우너하는 특정 요구에 따라 해당 데이터를 보여주도록 사용자화 할 수 있으며 자신이 원하는 위치에 위젯을 배치하는 것도 당연히 가능하다.
+또한 사용자가 원하는 특정 요구에 따라 해당 데이터를 보여주도록 사용자화 할 수 있으며 자신이 원하는 위치에 위젯을 배치하는 것도 당연히 가능하다.
 
 위젯을 구현하기 위해서는 앱에 `widget extension`을 추가해야 한다.
 
-또한, `timeline provider`를 이용하여 위젯을 수정해야 한다. 그리고 위젯 컨텐츠를 구성하기 위해 `SwiftUI`를 사용해야 한다.
+또한, `timeline provider`를 이용하여 위젯을 수정해야 한다. 그리고 위젯 컨텐츠를 뷰에 보여주기 위해서는 `SwiftUI`를 사용해야 한다.
 
 > timeline Provider : WidgetKit에게 위젯 내 데이터를 업데이트 해야 하는지 알려주는 역할.
 
 ![image](https://user-images.githubusercontent.com/33051018/86920847-44e5f400-c165-11ea-9dbd-f1c4a5f838c4.png)
 
+
 <br>
 
 
+## Creating a Widget Extension
+---
 
+iOS 홈 스크린 혹은 macOS Notification Center에 앱의 content를 보여주기 위해서는 extension을 연결해야 한다.
 
+### Overview
+
+위젯은 앱과 관련된 내용을 보여줌으로써 당신의 앱에 대한 세부사항을 보다 빨리 접할 수 있게 해준다.
+
+당신의 앱은 다양한 종류의 위젯을 제공할 수 있다. 또한 다양한 사이즈의 위젯을 제공할 수 있으며 앱에서 보여주고자 하는 content에 따라 한정된 공간 내에서 사이즈를 선택하면 된다.
+
+**사람들이 가장 보고싶어하고 중요하게 생각하는 정보를 제공하는데 집중하는 것이 가장 중요하다.**
+
+앱에 위젯을 추가하기 위해서는 약간의 절차가 필요하다. 
+
+또한, 위젯 내 디스플레이는 모두 SwiftUI로 구성해야 한다.
+
+<br>
+
+## Add Configuration Details
+---
+
+`widget` 익스텐션 템플릿은 `Widget` 프로토콜을 준수하는 초기 위젯을 제공한다.
+
+해당 위젯의 `body` 프로퍼티가 user-configurable 가능 여부를 결정한다.
+
+두 가지 구성이 가능하다.
+
+- `StaticConfiguration` : 유저가 구성가능한 프로퍼티가 없는 위젯이다. 에를 들어, 일반적인 주식 시장 정보를 보여주는 주식 시장 위젯 혹은 뉴스 내용을 단순히 보여주기만 하는 뉴스 위젯과 같이 정적으로 데이터를 제공하는 방식이다.
+
+- `IntentConfiguration` : 유저가 구성가능한 프로퍼티가 있는 위젯이다. 예를 들어, 날씨 위젯의 경우 도시의 위치를 참고하기 위한 우편번호가 필요할 수 있고, 택배 추적 위젯의 경우 운송장번호가 필요할 수 있다.
 
 <br>
 
@@ -61,11 +91,17 @@ small, medium, large 사이즈를 제공하며 화면 내 넓은 범위를 이�
 
 - `WidgetKit Framework`와 새로운 SwiftUI에서 사용 가능한 `widget API`를 이용하면 iOS, iPadOS, macOS를 아우르는 widget을 만들 수 있다.
 
+- `timeline Provider` : WidgetKit에게 위젯 내 데이터를 언제 업데이트 해야 하는지 일러주는 역할.
+
 - 현재 위젯은 세 가지의 사이즈를 제공한다. (small, medium, large)
 
 - 위젯을 구현하기 위해서는 앱에 `widget extension`을 추가해야 한다.
 
+- 사람들이 가장 보고싶어하고 중요하게 생각하는 정보를 제공하는데 집중하는 것이 가장 중요하다.
 
+- 구성 방식은 `StaticConfiguration` 방식과 `IntentConfiguration` 방식이 존재한다.
+  - `StaticConfiguration` 방식 : 유저가 구성가능한 속성이 없는 위젯.
+  - `IntentConfiguration` 방식 : 유저가 구성가능한 속성이 있는 위젯.
 
 
 <br>
