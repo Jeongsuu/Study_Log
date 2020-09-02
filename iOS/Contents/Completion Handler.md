@@ -159,9 +159,128 @@ Alamofire.request("https://google.com").responseJSON { response in
 
 <br>
 
+---
+---
+(내용 보충)
+
+## Completion Handler가 필요한 이유
+---
+
+함수 내부에서 특정 task를 실행한 이후에 실행될 task가 있다고 가정해보자.
+
+예를 들면, 데이터가 다운로드 된 이후 UI를 업데이트해야 한다고 했을때, task의 순서를 보장하며 순차적으로 실행되도록 하기 위한 방법이 무엇이 있을까?
+
+`Completion Handler`는 위와 같은 작업을 가능하도록 해준다.
+
+<br>
+
+## Completion Handler 만들기
+---
+
+`Completion Handler`를 만들고 함수의 인자로 전달해본다.
+
+```swift
+
+let simpleCompletionHandler: () -> Void = {
+    print("From the Completion Handler")
+}
+```
+
+위와 같이 `() -> Void` 타입의 `Completion Handler`를 생성하였다.
+
+이제 해당 타입의 `Completion Handler`를 인자로 받는 함수를 생성한다.
+
+```swift
+
+func takeCompletionHandler(completion: () -> Void) {
+    print("From the Function Body")
+    completion()
+}
+```
+
+해당 함수에 인자로 생성한 completion handler를 전달하며 호출해본다.
+```swift
+takeCompletionHandler(completion: simpleCompletionHandler)
+
+// From the Function Body
+// From the Completion Handler
+```
+
+함수 body가 실행되면서 completion 또한 함께 호출되는 결과값을 확인할 수 있다.
+
+다른 예시를 살펴보도록 한다.
+
+서버로부터 데이터를 다운받고 다운로드가 완료되면 유저에게 notification 해주는 함수를 작성한다.
+
+```swift
+func download(success: Bool, completionHandler: (Bool) -> Void) {
+    for _ in 0...5 {
+        print("downloading data from server...")
+    }
+
+    completionHandler(success)
+}
+```
+
+해당 함수는 `Bool` 타입의 인자와 `(Bool) -> Void` 타입의 인자를 전달받으며 다운로드가 완료되면 `completionHandler` 를 호출한다.
+
+함수 호출시 전달할 클로저를 생성한다.
+
+```swift
+
+let completionHandler: (Bool) -> Void = { (success) in
+    if success {
+        print("Completed")
+    } else {
+        print("Failed")
+    }
+}
+
+download(success: True, completionHandler: completionHandler)
+
+// downloading data from server...
+// downloading data from server...
+// downloading data from server...
+// downloading data from server...
+// downloading data from server...
+// Completed
+```
+
+위와 같이 download 함수를 호출하면서 전달한 인자값에 따라 분기 작업을 Completion Handler에서 처리할 수 있다.
+
+또한, 클로저를 생성하지 않고 함수 호출과 동시에 Trailing Closure로 처리할 수도 있다.
+
+```swift
+
+download(success: True) { success in
+    if success {
+        print("Completed")
+    } else {
+        print("Failed")
+    }
+}
+```
+
+이렇게 Completion Handler를 이용하면 함수를 호출하여 함수 내부 로직 실행 이후 특정 작업을 이어서 진행할 수 있도록 이어줄 수 있다.
+
+<br>
+
+## 데이터 전달 Completion Handler
+---
+```swift
+func passingData(completion: ([String]) -> Void) {
+    for _ in 1...10 {
+        print("Do some work")
+    }
+    completion(["Daily Swift", "Making List", "The Dreammer"])
+}
+
+passingData { (task) in
+    print("Finish \(task[0])")
+}
+```
+
+<br>
+
 ## Reference
 - [Swift docs: Closures](https://docs.swift.org/swift-book/LanguageGuide/Closures.html)
-
-
-
-
