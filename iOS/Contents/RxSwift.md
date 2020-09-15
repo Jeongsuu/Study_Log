@@ -187,17 +187,20 @@ let disposeBag = DisposeBag()
 let element = "test"
 
 Observable.just(element)
-    .subscribe { event in print(event) }
+    .subscribe(onNext: { str in
+        print(str)
+    })
     .disposed(by: disposeBag)
 
-// next("test")
-// completed
+// "test"
 
-Observable.just([1, 2, 3])
-    .subscribe { event in print(event) }
+Observable.just(["Hello", "World"])
+    .subscribe(onNext: { str in
+        print(str)
+    })
     .disposed(by: disposeBag)
-
-// next([1, 2, 3])
+    
+// ["Hello", "World"]
 // completed
 ```
 
@@ -251,18 +254,20 @@ let disposeBag = DisposeBag()
 let fruitArr = ["apple", "orange", "kiwi"]
 
 Observable.from(fruitArr)
-    .subscribe { element in print(element) }
+    .subscribe(onNext: { str in
+        print(str)
+    })
     .disposed(by: disposeBag)
 
-// next("apple")
-// next("orange")
-// next("kiwi")
+// apple
+// orange
+// kiwi
 
 ```
 
-배열 또는 시퀀스를 전달받고 배열에 포함된 요소들을 하나씩 순차적으로 방출한다.
+**배열 또는 시퀀스를 전달받고 배열에 포함된 요소들을 하나씩 순차적으로 방출한다.**
 
-- 하나의 요소를 방출하는 옵저버블 생성시에는 **just**
+- 하나의 요소를 방출하는 옵저버블 생성시에는 **just** 
 
 - 두 개 이상의 요소를 방출하는 옵저버를 생성할때는 **of**
 
@@ -279,21 +284,20 @@ Observable.from(fruitArr)
 import RxSwift
 
 let disposeBag = DisposeBag()
-let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-Observable.from(numbers)
-    .filter { $0.isMultiple(of: 2) }
-    .subscribe { print($0) }
+Observable.from([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    .filter{ $0 % 2 == 0 }
+    .subscribe(onNext: { n in
+        print(n)
+    })
     .disposed(by: disposeBag)
 
-/*
-    next(2)
-    next(4)
-    next(6)
-    next(8)
-    next(10)
-    completed
-*/
+// 2
+// 4
+// 6
+// 8
+// 10
+
 ```
 
 filter 연산자는 클로저를 파라미터로 받는다.
@@ -342,7 +346,101 @@ combineLatest 연산자는 source Observable을 결합하여 result Observable�
 
 연산자가 리턴한 옵저버블이 언제 이벤트를 방출하는지 이해하는 것이 핵심이다.
 
+<br>
 
+**map**
+
+```swift
+Observable.just("Hello")
+    .map { str in "\(str) RxSwift" }
+    .subscribe(onNext: {str in
+        print(str)
+    })
+    .disposed(by: disposeBag)
+    
+// Hello RxSwift
+```
+
+`just` 로 Hello를 생성하고 이후 `map`이 진행된다.
+
+`map`을 통해 전달받은 요소에 대하여 특정 연산 작업을 한 후 이로 변환하여 계속하여 진행한다.
+
+```swift
+
+Observable.from(["with", "여정수"])
+    .map { $0.count }      // map을 통한 mapping 연산 ( "with" -> 4, "여정수" -> 3)
+    .subscribe(onNext: { str in
+        print(str)
+    })
+    .disposed(by: disposeBag)
+
+// 4
+// 3
+```
+
+```swift
+
+Observable.just("800x600")      // "800x600" 이라는 옵저버블 생성
+    .map { $0.replacingOccurrences(of: "x", with: "/")}      // "x" -> "/" 로 치환
+    .map { "https://picsum.photos/\($0)/?random" }  // 치환한 문자열을 url에 합성
+    .map { URL(string: $0) }        // 문자열을 URL 타입으로 변환
+    .filter { $0 != nil }           // nil이 아닌 경우를 필터링
+    .map { $0! }                    // 옵셔널 언래핑
+    .map { try Data(contentsOf: $0) }   // 해당 URL에 이미지 데이터 다운로드.
+    .map { UIImage(data: $0) }          // 다운로드한 데이터를 이미지로 변환.
+    .subscribe(onNext: { image in       
+        self.imageView.image = image    // 변환한 이미지를 적용
+    })
+    .disposed(by: disposeBag)
+```
+
+
+---
+---
+
+<br>
+
+```swift
+
+Observable.just("Hello World")
+    .subscribe { event in
+        switch event {
+            case .next(let str):
+                break
+            case .error(let err):
+                break
+            case .completed:
+                break
+        }
+    }
+    .disposed(by: disposeBag)
+```
+
+위와 같이 `subscribe` 시 이벤트의 유형에 따라 switch ~ case 구문으로 분기 작업을 진행해주는 것이 정석적인 흐름이다.
+
+하지만 `next` 이벤트 처리만 진행하고자 할 때는 앞서 살펴봤던 것 과 같이 `subscribe` 시 `onNext` 로만 처리할 수 있다.
+
+<br>
+
+### Scheduler
+
+`observeOn`, `subscribeOn` 메소드를 통해서 스케줄러 설정을 할 수 있다.
+
+```swift
+Observable.from([0, 1, 2, 3, 4, 5])
+    .observeOn(backgroundSchedular)
+    .map { n in
+        print("백그라운드 스케줄러에서 실행")
+    }
+    .observeOn(MainSchedular.instance)
+    .map { n in
+        print("메인 스케줄러에서 실행")
+    }
+```
+
+`observeOn` 방식은 위와 같은 방식으로 사용할 수 있다.
+
+`observeOn`은 지정하는 위치 이후의 스트림에서 해당 스케줄러가 적용된다. 하지만  `subscribeOn` 은 `subscribe` 될 때 부터 해당 스트림에 적용하겠다는 의미이다.
 
 ### 정리
 ---
@@ -363,3 +461,12 @@ combineLatest 연산자는 source Observable을 결합하여 result Observable�
 
 - **filter** 연산자는 클로저를 파라미터로 받으며 클로저 내에서 True를 반환하는 값을 연산자가 리턴하는 옵저버블에 포함시킨다.
 
+- **map** 은 고차함수 map과 동일한 기능을 한다. 해당 요소에 지정 연산을 진행하여 데이터를 가공하는 기능.
+
+
+<br>
+
+### Reference
+---
+
+- [Reactivex.io](http://reactivex.io/documentation/operators.html)
