@@ -315,7 +315,7 @@ import RxSwift
 let disposeBag = DisposeBag()
 
 enum MyError: Error {
-    case eror
+    case error
 }
 
 let greetings = PublishSubject<String>()
@@ -441,6 +441,34 @@ Observable.from([0, 1, 2, 3, 4, 5])
 `observeOn` 방식은 위와 같은 방식으로 사용할 수 있다.
 
 `observeOn`은 지정하는 위치 이후의 스트림에서 해당 스케줄러가 적용된다. 하지만  `subscribeOn` 은 `subscribe` 될 때 부터 해당 스트림에 적용하겠다는 의미이다.
+
+
+<br>
+
+## Subject
+---
+
+**`Subject`는 Observer이면서 Observable이다.**
+
+즉, 방출하는 데이터를 subscribe 할 수도 있고(Observer) 자체적으로 데이터를 생성할 수도 있다(Observable).
+
+또한, `Observable` 은 unicast 방식인 방면 `Subject` 는 multicast 방식이기 때문에 여러개의 observer가 동시에 subscribe 할 수 있다.
+
+<br>
+
+<center><img src = "https://user-images.githubusercontent.com/33051018/93614924-ba93f900-fa0d-11ea-8411-b00b890057f3.png" width=400, height=250></center>
+
+- **PublishSubject** : 기본값을 갖지 않으며 subscribe 당시 데이터가 없으면 아무것도 방출하지 않다가 데이터가 생기면 그때 방출한다.
+
+<center><img src = "https://user-images.githubusercontent.com/33051018/93614036-9683e800-fa0c-11ea-830e-80bcf9bca3a0.png" width=400, height=250></center>
+
+- **BehaviorSubject** : 기본값을 가지며 subscribe 당시 데이터가 없을 경우, 기본값을 방출한다.
+
+<center><img src = "https://user-images.githubusercontent.com/33051018/93615233-165e8200-fa0e-11ea-8428-1903eb75f9b1.png" width=400, height=250></center>
+
+- **ReplaySubject** : 하나의 Subscriber가 있을 경우에는 PublishSubject와 동일하다, 그러나 추가적인 Subscriber가 생길 경우 기존의 데이터를 순차적으로 모두 보내준다.
+
+<br>
 
 ### 정리
 ---
