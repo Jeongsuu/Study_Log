@@ -1,11 +1,17 @@
 # Alamofire
 
-<br>
-
 `Alamofire`를 사용해보면서 공부한 내용을 정리한다.
 
 
-<br>
+
+`Alamofire`는 `Swift`에서 `HTTP` 통신을 하기 위해 이용되는 대표적인 오픈소스 라이브러리다.
+
+`Alamofire`가 제공하는 간략한 기능 소개는 아래와 같다.
+
+-   Request & Response 의 체이닝 함수 제공
+-   URL / JSON 형태의 파라미터 인코딩
+-   File / Data / Stream / MultipartFormData 등 업로드 기능
+-   HTTP Response의 Validation
 
 ### Request
 ---
