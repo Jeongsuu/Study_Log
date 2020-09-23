@@ -156,18 +156,143 @@ AF.request("https://httpbin.org/get").response { response in
 }
 ```
 
-`String` 타입으로 URL을 전달해줘도 AF 내에서 URL 타입으로 변환하여 요청을 진행한다.
+request 메소드 인자 중 `URLConvertible` 타입에  `String` 타입으로 URL을 전달해줘도 AF 내에서 URL 타입으로 변환하여 요청을 진행한다.
 
+이는 실제로 요청을 만들기 위한 `Alamofire`의 최상위 세션 유형 2개 중 하나이다.
 
+```swift
+open func request<Parameters: Encodable>(_ convertible: URLConvertible,
+                                         method: HTTPMethod = .get,
+                                         parameters: Parameters? = nil,
+                                         encoder: ParameterEncoder = URLEncodedFormParameterEncoder.default,
+                                         headers: HTTPHeaders? = nil,
+                                         interceptor: RequestInterceptor? = nil) -> DataRequest
+```
 
+두 메소드는 동일한 메소드이며 인자를 간단히 살펴보도록 한다.
 
-
+- method: 별다른 기입이 없을 경우 기본적으로 `get` 방식을 사용한다.
+- parameters: 옵셔널 값으로 기본적으로 `nil`이 선언된다.
+- encoder : 파라미터 인코딩시에는 default 인코딩을 진행한다.
+- headers : 옵셔널 값으로 기본적으로 `nil`이 선언된다.
+- interceptor : 옵셔널 값으로 기본적으로 `nil`이 선언된다.
 
 <br>
-<br>
+
+## HTTP Methods
+
+`Alamofire` 에서 제공하는 HTTP 메소드는 아래와 같다.
+
+```swift
+public struct HTTPMethod: RawRepresentable, Equatable, Hashable {
+    public static let connect = HTTPMethod(rawValue: "CONNECT")
+    public static let delete = HTTPMethod(rawValue: "DELETE")
+    public static let get = HTTPMethod(rawValue: "GET")
+    public static let head = HTTPMethod(rawValue: "HEAD")
+    public static let options = HTTPMethod(rawValue: "OPTIONS")
+    public static let patch = HTTPMethod(rawValue: "PATCH")
+    public static let post = HTTPMethod(rawValue: "POST")
+    public static let put = HTTPMethod(rawValue: "PUT")
+    public static let trace = HTTPMethod(rawValue: "TRACE")
+
+    public let rawValue: String
+
+    public init(rawValue: String) {
+        self.rawValue = rawValue
+    }
+}
+```
+위 method는 `AF.request` 시 `method`라는 인자로 전달하여 설정할 수 있다.
+```swift
+AF.request("https://httpbin.org/get")        // default = .get
+AF.request("https://httpbin.org/post", method: .post)
+AF.request("https://httpbin.org/put", method: .put)
+AF.request("https://httpbin.org/delete", method: .delete)
+```
+
 <br>
 
+## Request Parameters and parameter Encoders
+---
 
+`Alamofire` 는 request 시 `Encodable` 타입의 파라미터를 전달할 수 있다.
+
+파라미터를 전달하게 되면 `ParameterEncoder` 프로토콜을 준수하는 타입을 통해 전달되고 `URLRequest`에 추가되어 네트워킹 통신을 진행하게 된다.
+
+`ParameterEncoder` 프로토콜을 준수하는 타입은 `JSONParameterEncoder` 와 `URLEncodedFormParameterEncoder`가 존재한다.
+
+```swift
+struct Login: Encodable {
+    let email: String
+    let password: String
+}
+
+let login = Login(email: "test@test.com", password: "testPassword")
+
+AF.request("https://httpbin.org/post",
+            method: .post,
+            parameters: login,              // 파라미터 전달
+            encoder: JSONParameterEncoder.default).response { response in
+                debugPrint(response)
+)
+```
+
+<br>
+
+### URLEncodedFormParameterEncoder
+
+`URLEncodedFormParameterEncoder` 는 값을 URL 인코딩 문자열로 인코딩하여 기존의 URL 쿼리 문자열로 설정 및 추가할 수 있다.
+
+또한, 인코딩 목적지를 설정하여 인코딩 된 문자열이 설정되는 위치를 직접 제어할 수 있다.
+
+`URLEncodedFormParameterEncoder.destionation` 은 세 가지를 제공한다.
+
+- `.methodDependent` : 인코딩 된 쿼리 문자열 결과를 `.get`, `.head`, `.delete` 요청에 대한 쿼리 문자열에 적용하고 다른 HTTP 메소드의 요청에 대한 HTTP body로 설정한다.
+- `.queryString` : 인코딩 된 문자열을 요청 URL 쿼리에 설정 및 추가한다.
+- `.httpBody` : 인코딩된 문자열을 URLRequest의 HTTP Body로 설정한다.
+
+
+**URL 인코딩된 파라미터를 전달하는 GET 요청**
+```swift
+let param = ["foo": "bar"]
+
+//  아래 3개의 요청은 모두 동일하다.
+AF.request("https://httpbin.org/get", parameters: param)         // 기본 인코딩 설정은 URLEncoding.default로 진행된다.
+AF.request("https://httpbin.org/get", parameters: param, encoder: URLEncodedFormParameterEncoder.default)
+AF.request("https://httpbin.org/get", parameters: parameters, encoder: URLEncodedFormParameterEncoder(destination: .methodDependent))
+
+// https://httpbin.org/get?foo=bar
+```
+
+**URL 인코딩된 파라미터를 전달하는 POST 요청**
+```swift
+let param: [String: [String]] = [
+    "foo": ["bar"],
+    "baz": ["a", "b"],
+    "qux": ["x", "y", "z"]
+]
+
+// 아래 3개의 요청은 모두 동일하다.
+AF.request("https://httpbin.org/post", method: .post, parameters: param)
+AF.request("https://httpbin.org/post", method: .post, parameters: parameters, encoder: URLEncodedFormParameterEncoder.default)
+AF.request("https://httpbin.org/post", method: .post, parameters: parameters, encoder: URLEncodedFormParameterEncoder(destination: .httpBody))
+
+// HTTP body: "qux[]=x&qux[]=y&qux[]=z&baz[]=a&baz[]=b&foo[]=bar"
+```
+
+`Alamofire`는 기본저그로 Array Parameter를 인코딩 할 때, 위와 같이 `qux[]=x&qux[]=y` 이런식으로 인코딩한다.
+
+만일 이를 `qux=x&qux=y` 이런식으로 전달하고 싶을때는 `.noBrackets` 속성을 이용하면 된다.
+
+```swift
+
+let param: [String: [String]] = [
+    "foo": ["1", "2"]
+]
+
+let customEncoder = URLEncodedFormParameterEncoder(encoder: URLEncodedFormEncoder(arrayEncoding: .noBrackets))
+AF.request("https://httpbin.org/post", parameters: param, encoder: customEncoder)
+```
 
 
 <br>
