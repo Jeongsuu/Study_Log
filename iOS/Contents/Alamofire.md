@@ -2,8 +2,6 @@
 
 `Alamofire`를 사용해보면서 공부한 내용을 정리한다.
 
-
-
 `Alamofire`는 `Swift`에서 `HTTP` 통신을 하기 위해 이용되는 대표적인 오픈소스 라이브러리다.
 
 `Alamofire`가 제공하는 간략한 기능 소개는 아래와 같다.
@@ -137,8 +135,46 @@ Alamofire.request("https://google.com/get").validate().responseData { response i
 
 <br>
 
+
+---
+---
+
+(공식 github 번역 내용 추가)
+
+<br>
+
+## Making Requests
+---
+
+`Alamofire` 를 이용하면 HTTP Request를 편리하고 다양하게 만들 수 있다.
+
+제일 간단한 요청 방법은 아래와 같다.
+
+```swift
+AF.request("https://httpbin.org/get").response { response in
+    debugPrint(response)
+}
+```
+
+`String` 타입으로 URL을 전달해줘도 AF 내에서 URL 타입으로 변환하여 요청을 진행한다.
+
+
+
+
+
+
+<br>
+<br>
+<br>
+
+
+
+
+<br>
+
 ## Example
 ---
+
 
 <br>
 
