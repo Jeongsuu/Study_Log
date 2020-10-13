@@ -67,11 +67,11 @@ class LoginViewController: UIViewController {
         self.emailTextField.delegate = self
         self.pwTextField.delegate = self
         self.loginButton.addTarget(self,
-                                   action: #selector(didTapLoginButton),
-                                   for: .touchUpInside)
+            action: #selector(didTapLoginButton),
+            for: .touchUpInside)
         self.registerButton.addTarget(self,
-                                      action: #selector(didTapRegisterButton),
-                                      for: .touchUpInside)
+            action: #selector(didTapRegisterButton),
+            for: .touchUpInside)
     }
 
     override func viewDidLayoutSubviews() {
@@ -125,13 +125,10 @@ class LoginViewController: UIViewController {
             make.height.equalTo(50)
         }
     }
-
-    
     @objc private func didTapLoginButton() {
         // validation check
     }
-    
-    
+
     /// Goto ReigsterVC
     @objc private func didTapRegisterButton() {
         print(#function)
@@ -158,7 +155,7 @@ extension LoginViewController: UITextFieldDelegate {
 #if DEBUG
 // opt + cmd + enter : open preview window
 // opt + cmd + p : build preview
-import SwiftUI
+    import SwiftUI
     struct ViewControllerRepresentable: UIViewControllerRepresentable {
         func updateUIViewController(_ uiView: UIViewController, context: Context) {
             // leave this empty
@@ -170,7 +167,7 @@ import SwiftUI
         }
     }
     @available(iOS 13.0, *)
-    struct ViewControllerRepresentable_PreviewProvider: PreviewProvider {
+    struct ViewControllerRepresentablePreviewProvider: PreviewProvider {
         static var previews: some View {
             ViewControllerRepresentable()
                 .ignoresSafeArea()

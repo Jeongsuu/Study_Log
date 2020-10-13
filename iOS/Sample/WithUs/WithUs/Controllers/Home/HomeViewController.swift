@@ -28,5 +28,4 @@ class HomeViewController: UIViewController {
             present(navigationController, animated: false, completion: nil)
         }
     }
-
 }
