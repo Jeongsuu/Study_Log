@@ -13,8 +13,6 @@ class ConsversationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        self.title = "Covnersation VC"
-
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -31,5 +29,4 @@ class ConsversationViewController: UIViewController {
             present(navigation, animated: false)
         }
     }
-
 }

@@ -13,6 +13,8 @@
 		040904B1253579B0005CF7C3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 040904AF253579B0005CF7C3 /* Main.storyboard */; };
 		040904B3253579B2005CF7C3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 040904B2253579B2005CF7C3 /* Assets.xcassets */; };
 		040904B6253579B2005CF7C3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 040904B4253579B2005CF7C3 /* LaunchScreen.storyboard */; };
+		04209FFB2536C981003D22B1 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04209FFA2536C981003D22B1 /* DatabaseManager.swift */; };
+		04209FFE2536CC40003D22B1 /* ChatAppUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04209FFD2536CC40003D22B1 /* ChatAppUser.swift */; };
 		04A6516E25357BC000C3B031 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A6516D25357BC000C3B031 /* LoginViewController.swift */; };
 		04A6517125357BCF00C3B031 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A6517025357BCF00C3B031 /* RegisterViewController.swift */; };
 		04A6517425357BF000C3B031 /* PhotoViewerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A6517325357BF000C3B031 /* PhotoViewerViewController.swift */; };
@@ -33,6 +35,8 @@
 		040904B2253579B2005CF7C3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		040904B5253579B2005CF7C3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		040904B7253579B2005CF7C3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		04209FFA2536C981003D22B1 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
+		04209FFD2536CC40003D22B1 /* ChatAppUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAppUser.swift; sourceTree = "<group>"; };
 		04A6516D25357BC000C3B031 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		04A6517025357BCF00C3B031 /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		04A6517325357BF000C3B031 /* PhotoViewerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewerViewController.swift; sourceTree = "<group>"; };
@@ -115,6 +119,7 @@
 		04A6516625357A4500C3B031 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				04209FFD2536CC40003D22B1 /* ChatAppUser.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -132,6 +137,7 @@
 				040904A9253579B0005CF7C3 /* AppDelegate.swift */,
 				040904AB253579B0005CF7C3 /* SceneDelegate.swift */,
 				04A65182253582AE00C3B031 /* Extension.swift */,
+				04209FFA2536C981003D22B1 /* DatabaseManager.swift */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -305,8 +311,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				04A6516E25357BC000C3B031 /* LoginViewController.swift in Sources */,
+				04209FFB2536C981003D22B1 /* DatabaseManager.swift in Sources */,
 				04A6517125357BCF00C3B031 /* RegisterViewController.swift in Sources */,
 				04A6517A25357C1500C3B031 /* NewConversationViewController.swift in Sources */,
+				04209FFE2536CC40003D22B1 /* ChatAppUser.swift in Sources */,
 				040904AE253579B0005CF7C3 /* ConsversationViewController.swift in Sources */,
 				04A6517725357BF700C3B031 /* VideoPlayerViewController.swift in Sources */,
 				04A65183253582AE00C3B031 /* Extension.swift in Sources */,

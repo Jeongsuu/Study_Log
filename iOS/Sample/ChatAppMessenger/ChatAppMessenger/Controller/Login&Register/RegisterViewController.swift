@@ -102,7 +102,7 @@ class RegisterViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "LOGIN"
+        self.title = "REGISTER"
         self.view.backgroundColor = .white
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Register",
                                                                  style: .done,
@@ -173,7 +173,7 @@ class RegisterViewController: UIViewController {
                                       height: 52)
     }
 
-    /// Push RegisterVC
+    /// Register new Account
     @objc private func didTapRegisterButton() {
         emailField.resignFirstResponder()
         passwordField.resignFirstResponder()
@@ -181,34 +181,45 @@ class RegisterViewController: UIViewController {
         lastNameField.resignFirstResponder()
 
         guard let firstName = firstNameField.text,
-            let lastName = lastNameField.text,
-            let email = emailField.text,
-            let password = passwordField.text,
-            !email.isEmpty, !password.isEmpty,
-            !firstName.isEmpty, !lastName.isEmpty,
-            password.count >= 6 else {
-                alertRegisterError()
-                return }
+              let lastName = lastNameField.text,
+              let email = emailField.text,
+              let password = passwordField.text,
+              !email.isEmpty, !password.isEmpty,
+              !firstName.isEmpty, !lastName.isEmpty,
+              password.count >= 6 else {
+            alertRegisterError()
+            return
+        }
 
-        FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password) { [weak self] (authReesult, error) in
+        DatabaseManager.shared.isUserExist(with: email) { [weak self] exist in
             guard let self = self else { return }
-            guard let result = authReesult, error == nil else {
+            guard !exist else {
+                self.alertRegisterError(message: "이미 존재하는 email 입니다.")
                 return
             }
-            let user = result.user
-            print("Created User: \(user)")
-            self.navigationController?.dismiss(animated: true, completion: nil)
+
+            FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password) {(authReesult, error) in
+                guard authReesult != nil, error == nil else {
+                    return
+                }
+
+                DatabaseManager.shared.insertUser(with: ChatAppUser(firstName: firstName,
+                                                                    lastName: lastName,
+                                                                    email: email))
+
+                self.navigationController?.dismiss(animated: true, completion: nil)
+            }
         }
     }
 
-    private func alertRegisterError() {
+    private func alertRegisterError(message: String = "정확한 정보를 기입해주세요.") {
         let alert = UIAlertController(title: "Error",
-            message: "Please answer correct infomation",
-            preferredStyle: .alert)
+                                      message: message,
+                                      preferredStyle: .alert)
 
         alert.addAction(UIAlertAction(title: "OK",
-            style: .cancel,
-            handler: nil))
+                                      style: .cancel,
+                                      handler: nil))
 
         present(alert, animated: true)
     }
@@ -233,24 +244,24 @@ extension RegisterViewController: UIImagePickerControllerDelegate, UINavigationC
 
     func presentActionSheet() {
         let actionSheet = UIAlertController(title: "Profile Image",
-            message: "Choose your Image",
-            preferredStyle: .actionSheet)
+                                            message: "Choose your Image",
+                                            preferredStyle: .actionSheet)
 
         actionSheet.addAction(UIAlertAction(title: "Cancel",
-            style: .cancel,
-            handler: nil))
+                                            style: .cancel,
+                                            handler: nil))
 
         actionSheet.addAction(UIAlertAction(title: "Take Photo",
-            style: .default,
-            handler: { [weak self] _ in
-                self?.presentCamera()
-            }))
+                                            style: .default,
+                                            handler: { [weak self] _ in
+                                                self?.presentCamera()
+                                            }))
 
         actionSheet.addAction(UIAlertAction(title: "Choose Photo",
-            style: .default,
-            handler: { [weak self] _ in
-                self?.presentPhotoPicker()
-            }))
+                                            style: .default,
+                                            handler: { [weak self] _ in
+                                                self?.presentPhotoPicker()
+                                            }))
 
         present(actionSheet, animated: true, completion: nil)
     }
