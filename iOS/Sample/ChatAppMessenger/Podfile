@@ -6,8 +6,16 @@ target 'ChatAppMessenger' do
   use_frameworks!
 
   # Pods for ChatAppMessenger
+
+# Firebase
 pod 'Firebase/Core'
 pod 'Firebase/Auth'
 pod 'Firebase/Database'
+
+# Lint
 pod 'SwiftLint'
+
+# Facebook
+pod 'FBSDKLoginKit'
+
 end
