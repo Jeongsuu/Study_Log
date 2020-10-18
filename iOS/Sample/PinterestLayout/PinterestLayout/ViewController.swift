@@ -9,14 +9,14 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    // MARK:- Outlet
+    // MARK:- Outlets
 
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var collectionView: UICollectionView!
 
     // MARK:- Properties
 
-    let images: [UIImage] = [#imageLiteral(resourceName: "test2"), #imageLiteral(resourceName: "test1"), #imageLiteral(resourceName: "test4"), #imageLiteral(resourceName: "test3"), #imageLiteral(resourceName: "test5")]
+    let viewModel: ViewModel = ViewModel(client: UnsplashClient())
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,8 +29,28 @@ class ViewController: UIViewController {
                                                    left: 10,
                                                    bottom: 10,
                                                    right: 10)
+        
+        // Init ViewModel
+        viewModel.showLoading = {
+            if self.viewModel.isLoading {
+                self.activityIndicator.startAnimating()
+                self.collectionView.alpha = 0.0
+            } else {
+                self.activityIndicator.stopAnimating()
+                self.collectionView.alpha = 1.0
+            }
+        }
+        
+        viewModel.showError = { error in
+            print(error)
+        }
+        
+        viewModel.reloadData = {
+            self.collectionView.reloadData()
+        }
+        
+        viewModel.fetchPhotos()
     }
-
 }
 
 // MARK:- DataSource Methods
@@ -38,13 +58,13 @@ class ViewController: UIViewController {
 extension ViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return images.count
+        return viewModel.cellViewModels.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as? PhotoCell else { return UICollectionViewCell() }
-        cell.imageView.image = images[indexPath.item]
-        cell.imageView.clipsToBounds = true
+        let image = viewModel.cellViewModels[indexPath.item].image
+        cell.imageView.image = image
         return cell
     }
 }
@@ -54,7 +74,7 @@ extension ViewController: UICollectionViewDataSource {
 extension ViewController: PinterestLayoutDelegate {
     func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat {
 
-        let image = images[indexPath.row]
+        let image = viewModel.cellViewModels[indexPath.item].image
         let height = image.size.height
         
         return height

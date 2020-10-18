@@ -39,7 +39,7 @@ enum Order: String {
 
 enum UnsplashEndPoint: EndPoint {
     // api.unsplash.com/photos
-    case photos(id: String, orderBy: Order)
+    case photos(client_id: String, orderBy: Order)
 
     var baseURL: String {
         return "https://api.unsplash.com"

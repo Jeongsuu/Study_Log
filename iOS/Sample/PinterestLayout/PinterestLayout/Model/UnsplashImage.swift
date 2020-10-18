@@ -11,11 +11,14 @@ typealias Photos = [Photo]
 
 struct Photo: Codable {
     let id: String
-    let url: String
-    
+    let urls: URLS
 }
 
-enum URLS: String, Codable {
-    case raw, full, regular, small, thumb
+struct URLS: Codable {
+    let raw: URL
+    let full: URL
+    let regular: URL
+    let small: URL
+    let thumb: URL
 }
 

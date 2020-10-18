@@ -11,6 +11,8 @@ enum APIError: Error {
     case unknown
     case badResponse
     case jsonDecoder
+    case imageDownload
+    case imageConvert
 }
 
 /// protocol for APIClient
@@ -51,7 +53,6 @@ extension APIClient {
                 completion(.success(value))
             }
         }
-        
         task.resume()
     }
 }
