@@ -7,48 +7,51 @@
 
 import Foundation
 
-// protocol for EndPoint
+/// EndPoint 프로토콜 정의
 protocol EndPoint {
-    var baseURL: String { get }
+    static var baseURL: String { get }
     var path: String { get }
     var urlparam: [URLQueryItem] { get }
 
 }
 
-// Default Implementation
+/// 프로토콜 초기 구현
 extension EndPoint {
 
+    static var baseURL: String {
+        return "https://api.unsplash.com"
+    }
+    
+    // url 구성
     var urlComponent: URLComponents {
-        var urlComponent = URLComponents(string: baseURL)
+        var urlComponent = URLComponents(string: Self.baseURL)
         urlComponent?.path = path
         urlComponent?.queryItems = urlparam
 
         return urlComponent!
     }
 
+    // 요청 보낼 URL
     var request: URLRequest {
         return URLRequest(url: urlComponent.url!)
     }
 }
 
+/// 정렬 기준 열거형
 enum Order: String {
     case polular
     case latest
     case oldest
 }
 
+/// UnsplashEndPoint 열거형
 enum UnsplashEndPoint: EndPoint {
-    // api.unsplash.com/photos
-    case photos(client_id: String, orderBy: Order)
 
-    var baseURL: String {
-        return "https://api.unsplash.com"
-    }
-
+    // 열거형 내에서 사용할 변수
     var path: String {
         switch self {
         case .photos:
-            return "/photos"
+            return "/photos" // https://api.unsplash.com/photos
         }
     }
 
@@ -61,4 +64,6 @@ enum UnsplashEndPoint: EndPoint {
             ]
         }
     }
+
+    case photos(client_id: String, orderBy: Order)
 }

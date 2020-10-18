@@ -1,3 +1,10 @@
+//
+//  PinterestLayoutDelegate.swift
+//  PinterestLayout
+//
+//  Created by Yeojaeng on 2020/10/18.
+//
+
 import UIKit
 
 protocol PinterestLayoutDelegate: class {
