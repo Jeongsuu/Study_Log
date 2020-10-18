@@ -76,7 +76,6 @@
 				04F6E000253C51A9004769E4 /* Views */,
 				04F6DFEB253C38D8004769E4 /* AppDelegate.swift */,
 				04F6DFED253C38D8004769E4 /* SceneDelegate.swift */,
-				04F6DFEF253C38D8004769E4 /* ViewController.swift */,
 				04F6DFF1253C38D8004769E4 /* Main.storyboard */,
 				04F6DFF4253C38D8004769E4 /* Assets.xcassets */,
 				04F6DFF6253C38D8004769E4 /* LaunchScreen.storyboard */,
@@ -90,6 +89,7 @@
 			children = (
 				04F6E001253C51B9004769E4 /* PhotoCell.swift */,
 				04F6E005253C5CE9004769E4 /* PinterstLayout.swift */,
+				04F6DFEF253C38D8004769E4 /* ViewController.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
