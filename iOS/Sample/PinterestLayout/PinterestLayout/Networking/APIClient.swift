@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 /// API 통신 관련 에러 열거형
 enum APIError: Error {
     case unknown
@@ -19,16 +18,14 @@ enum APIError: Error {
 
 /// APIClient 프로토콜
 protocol APIClient {
-
     var session: URLSession { get }
 
     func get<T: Codable>(with request: URLRequest, completion: @escaping (Result<[T], Error>) -> Void)
-
 }
 
 // 프로토콜 초기 구현
 extension APIClient {
-
+    // URLSession 싱글톤 세션
     var session: URLSession {
         return URLSession.shared
     }
