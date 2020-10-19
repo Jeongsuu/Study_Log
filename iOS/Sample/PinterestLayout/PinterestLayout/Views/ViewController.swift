@@ -67,12 +67,17 @@ class ViewController: UIViewController {
 
 extension ViewController: UICollectionViewDataSource {
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView,
+                        numberOfItemsInSection section: Int) -> Int {
         return viewModel.cellViewModels.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as? PhotoCell else { return UICollectionViewCell() }
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell",
+                                                            for: indexPath) as? PhotoCell else {
+            return UICollectionViewCell()
+        }
         let image = viewModel.cellViewModels[indexPath.item].image
         cell.imageView.image = image
         return cell
@@ -81,7 +86,8 @@ extension ViewController: UICollectionViewDataSource {
 
 // MARK:- CustomFlowLayout Delegate
 extension ViewController: PinterestLayoutDelegate {
-    func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView,
+                        heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat {
         let image = viewModel.cellViewModels[indexPath.item].image
         let height = image.size.height
         return height

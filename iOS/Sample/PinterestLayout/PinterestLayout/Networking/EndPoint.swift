@@ -22,7 +22,7 @@ extension EndPoint {
         return "https://api.unsplash.com"
     }
     
-    // url 구성
+    // request시 이용할 url을 위한 url 구성
     var urlComponent: URLComponents {
         var urlComponent = URLComponents(string: Self.baseURL)
         urlComponent?.path = path
