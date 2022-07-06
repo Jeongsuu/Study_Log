@@ -145,7 +145,7 @@ var closure = {print(a,b)}
 closure()       // 1, 0
 
 a = 0
-b - 1
+b = 1
 
 closure()       // 0, 1
 ```
